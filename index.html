@@ -1,0 +1,2466 @@
+<!DOCTYPE html>
+
+<html lang="zh-CN">
+<head>
+<meta charset="utf-8"/>
+<meta content="width=device-width, initial-scale=1.0" name="viewport"/>
+<title>AI 行业动态与价格看板</title>
+<script src="https://cdn.jsdelivr.net/npm/echarts@5.4.3/dist/echarts.min.js"></script>
+<style>
+        :root {
+            --bg-color: #f3f4f6;
+            --card-bg: #ffffff;
+            --text-primary: #111827;
+            --text-secondary: #4b5563;
+            --border-color: #e5e7eb;
+            
+            /* News Specific Colors */
+            --col-overseas: #eff6ff;
+            --col-domestic: #f0fdf4;
+            --col-emerging: #fdf2f8;
+            --header-overseas: #3b82f6;
+            --header-domestic: #10b981;
+            --header-emerging: #db2777;
+
+            /* Price Specific Colors */
+            --price-primary: #1664ff; 
+            --openai-green: #10a37f;
+            --google-blue: #4285F4;
+            --anthropic-orange: #d97757;
+            --alibaba-red: #ff6a00;
+        }
+
+        body {
+            font-family: 'Inter', -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, sans-serif;
+            background-color: var(--bg-color);
+            color: var(--text-primary);
+            margin: 0;
+            padding: 0; /* Changed to 0 to allow full width nav */
+        }
+
+        /* --- Main Navigation Bar --- */
+        .main-nav-bar {
+            background: white;
+            padding: 0 20px;
+            box-shadow: 0 2px 4px rgba(0,0,0,0.05);
+            position: sticky;
+            top: 0;
+            z-index: 1000;
+            display: flex;
+            justify-content: center;
+            gap: 40px;
+        }
+
+        .main-nav-btn {
+            background: none;
+            border: none;
+            padding: 20px 10px;
+            font-size: 16px;
+            font-weight: 600;
+            color: #6b7280;
+            cursor: pointer;
+            position: relative;
+            transition: all 0.2s;
+        }
+
+        .main-nav-btn:hover {
+            color: #111827;
+        }
+
+        .main-nav-btn.active {
+            color: #2563eb;
+        }
+
+        .main-nav-btn.active::after {
+            content: '';
+            position: absolute;
+            bottom: 0;
+            left: 0;
+            width: 100%;
+            height: 3px;
+            background-color: #2563eb;
+            border-radius: 3px 3px 0 0;
+        }
+
+        .view-container {
+            padding: 20px;
+            display: none;
+            animation: fadeIn 0.3s ease;
+        }
+
+        .view-container.active {
+            display: block;
+        }
+
+        @keyframes fadeIn {
+            from { opacity: 0; transform: translateY(5px); }
+            to { opacity: 1; transform: translateY(0); }
+        }
+
+        /* =========================================
+           NEWS VIEW STYLES (Prefix: .news-*)
+           ========================================= */
+        
+        .news-dashboard-header {
+            text-align: center;
+            margin-bottom: 40px;
+            padding: 0;
+            background: white;
+            border-radius: 12px;
+            box-shadow: 0 4px 6px rgba(0,0,0,0.05);
+            overflow: hidden;
+        }
+
+        .news-banner-container {
+            position: relative;
+            height: 200px;
+            width: 100%;
+            overflow: hidden;
+        }
+
+        .news-banner-img {
+            width: 100%;
+            height: 100%;
+            object-fit: cover;
+            filter: brightness(0.7);
+        }
+
+        .news-banner-overlay {
+            position: absolute;
+            top: 50%;
+            left: 50%;
+            transform: translate(-50%, -50%);
+            color: white;
+            text-shadow: 0 2px 4px rgba(0,0,0,0.5);
+            width: 100%;
+        }
+
+        .news-dashboard-header h1 {
+            margin: 0;
+            font-size: 2.5rem;
+            color: white;
+            font-weight: 800;
+        }
+
+        .news-dashboard-header p {
+            color: rgba(255,255,255,0.9);
+            margin-top: 8px;
+            font-size: 1.1rem;
+        }
+
+        .news-filter-container {
+            padding: 20px;
+            background: white;
+            border-top: 1px solid #f3f4f6;
+        }
+        
+        .news-checkbox-group {
+            display: flex;
+            justify-content: center;
+            flex-wrap: wrap;
+            gap: 10px;
+        }
+
+        .news-checkbox-btn {
+            cursor: pointer;
+            position: relative;
+        }
+
+        .news-checkbox-btn input {
+            position: absolute;
+            opacity: 0;
+            cursor: pointer;
+        }
+
+        .news-btn-content {
+            display: inline-block;
+            padding: 8px 16px;
+            background-color: #f3f4f6;
+            border: 1px solid #e5e7eb;
+            border-radius: 20px;
+            color: #4b5563;
+            font-size: 0.9rem;
+            font-weight: 500;
+            transition: all 0.2s;
+            user-select: none;
+        }
+
+        .news-checkbox-btn:hover .news-btn-content {
+            background-color: #e5e7eb;
+        }
+
+        .news-checkbox-btn input:checked + .news-btn-content {
+            background-color: #eff6ff;
+            border-color: #3b82f6;
+            color: #2563eb;
+            box-shadow: 0 0 0 1px #3b82f6;
+        }
+        
+        .timeline-container {
+            max-width: 1600px;
+            margin: 0 auto;
+            overflow-x: auto;
+        }
+
+        .matrix-grid {
+            display: grid;
+            grid-template-columns: 100px 2fr 1fr 1fr;
+            gap: 20px;
+            min-width: 1200px;
+        }
+
+        /* Two-column layout for Overseas news */
+        .news-grid-2col {
+            display: grid !important;
+            grid-template-columns: 1fr 1fr;
+            gap: 15px;
+            align-content: start;
+        }
+
+        .news-grid-2col .news-item {
+            border: 1px solid #eee;
+            border-radius: 8px;
+            padding: 15px !important;
+        }
+
+        .col-header {
+            padding: 15px;
+            border-radius: 8px;
+            font-weight: 700;
+            text-align: center;
+            font-size: 1.1rem;
+            position: sticky;
+            top: 0;
+            z-index: 10;
+        }
+
+        .header-overseas { background: var(--col-overseas); color: var(--header-overseas); border-top: 4px solid var(--header-overseas); }
+        .header-domestic { background: var(--col-domestic); color: var(--header-domestic); border-top: 4px solid var(--header-domestic); }
+        .header-emerging { background: var(--col-emerging); color: var(--header-emerging); border-top: 4px solid var(--header-emerging); }
+
+        /* Time Column (Left) - Timeline Style */
+        .time-label {
+            position: relative;
+            text-align: right;
+            padding-right: 20px;
+            color: #666;
+            font-family: 'Segoe UI', sans-serif;
+            border-right: 2px solid #e0e0e0; /* Vertical timeline line */
+            display: flex;
+            flex-direction: column;
+            align-items: flex-end;
+            justify-content: flex-start;
+            padding-top: 20px;
+            background: transparent !important; /* Override old background */
+            border-radius: 0 !important;
+            border: none;
+            border-right: 2px solid #e0e0e0 !important;
+            min-height: auto !important; /* Remove fixed height constraint */
+            writing-mode: horizontal-tb !important; /* Reset writing mode */
+            text-orientation: mixed;
+        }
+
+        /* The Dot on the timeline */
+        .time-label::after {
+            content: '';
+            position: absolute;
+            right: -6px; /* Center on the 2px border */
+            top: 28px; /* Align with date text */
+            width: 10px;
+            height: 10px;
+            background-color: var(--primary-color, #2563eb);
+            border-radius: 50%;
+            border: 2px solid white;
+            box-shadow: 0 0 0 1px var(--primary-color, #2563eb);
+        }
+
+        .time-date {
+            font-size: 1.1em !important;
+            font-weight: bold;
+            color: #333;
+            line-height: 1.2;
+            margin-bottom: 0 !important;
+        }
+
+        .time-week {
+            font-size: 0.85em !important;
+            color: #888;
+            margin-top: 4px;
+            font-weight: normal !important;
+        }
+
+        /* Adjust Week Row to span full width */
+        .week-row {
+            display: contents; /* Allows children to participate in the main grid */
+        }
+        
+        /* Remove old borders/styles if any */
+        .time-label span {
+            display: block;
+        }
+
+        .news-cell {
+            background: white;
+            border-radius: 12px;
+            padding: 20px;
+            box-shadow: 0 1px 2px rgba(0,0,0,0.05);
+            display: flex;
+            flex-direction: column;
+            gap: 15px;
+            border: 1px solid var(--border-color);
+        }
+
+        .news-item {
+            padding-bottom: 15px;
+            border-bottom: 1px dashed #eee;
+        }
+
+        .news-item:last-child {
+            border-bottom: none;
+            padding-bottom: 0;
+        }
+
+        .news-title {
+            font-size: 1.1rem;
+            font-weight: 600;
+            margin: 0 0 8px 0;
+            line-height: 1.4;
+            display: flex;
+            align-items: center;
+            gap: 8px;
+        }
+
+        .news-title a {
+            color: #111827;
+            text-decoration: none;
+            transition: color 0.2s;
+        }
+
+        .news-title a:hover {
+            color: var(--header-overseas);
+        }
+
+        .news-desc {
+            font-size: 0.9rem;
+            color: #4b5563;
+            background-color: #f3f4f6;
+            padding: 8px 10px;
+            border-radius: 6px;
+            margin-bottom: 10px;
+            line-height: 1.5;
+            border-left: 3px solid #cbd5e1;
+        }
+
+        .date-badge {
+            font-size: 0.75rem;
+            color: #9ca3af;
+            margin-bottom: 4px;
+            display: block;
+        }
+
+        .details-container {
+            margin-top: 5px;
+            background: #ffffff;
+            border-radius: 8px;
+            overflow: hidden;
+            border: 1px solid #e5e7eb;
+        }
+
+        .details-summary {
+            padding: 10px 15px;
+            cursor: pointer;
+            font-weight: 500;
+            color: #2563eb;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            user-select: none;
+            font-size: 0.9rem;
+            transition: background 0.2s;
+        }
+
+        .details-summary:hover {
+            background: #eff6ff;
+        }
+
+        .details-summary::after {
+            content: '▼';
+            font-size: 0.8rem;
+        }
+
+        details[open] .details-summary::after {
+            content: '▲';
+        }
+
+        .details-content {
+            padding: 15px;
+            border-top: 1px solid #e5e7eb;
+            font-size: 0.9rem;
+            line-height: 1.6;
+            color: #374151;
+            background-color: #fafafa;
+        }
+
+        .takeaway-box {
+            margin-top: 12px;
+            padding: 10px 12px;
+            background: #fffbeb;
+            border-left: 4px solid #f59e0b;
+            border-radius: 4px;
+            font-size: 0.85rem;
+        }
+        
+        .takeaway-title {
+            font-weight: 700;
+            color: #b45309;
+            margin-bottom: 4px;
+            display: block;
+            text-transform: uppercase;
+            font-size: 0.75rem;
+        }
+
+        .tag-tech { background: #e0e7ff; color: #4338ca; padding: 2px 6px; border-radius: 4px; font-size: 0.75rem; }
+        .tag-biz { background: #dcfce7; color: #15803d; padding: 2px 6px; border-radius: 4px; font-size: 0.75rem; }
+        .tag-strategy { background: #fae8ff; color: #86198f; padding: 2px 6px; border-radius: 4px; font-size: 0.75rem; }
+
+
+        /* =========================================
+           PRICE VIEW STYLES 
+           ========================================= */
+        .price-container {
+            max-width: 1400px;
+            margin: 0 auto;
+        }
+        
+        .price-header {
+            background: linear-gradient(rgba(0, 0, 0, 0.6), rgba(0, 0, 0, 0.6)), url('https://images.unsplash.com/photo-1518770660439-4636190af475?q=80&w=2070&auto=format&fit=crop');
+            background-size: cover;
+            background-position: center;
+            color: white;
+            padding: 60px 20px;
+            border-radius: 12px;
+            margin-bottom: 24px;
+            box-shadow: 0 4px 12px rgba(0, 0, 0, 0.2);
+            text-align: center;
+        }
+        .price-header h1 {
+            margin: 0;
+            font-size: 28px;
+            font-weight: 600;
+        }
+        .price-subtitle {
+            margin-top: 8px;
+            opacity: 0.9;
+            font-size: 14px;
+        }
+        
+        /* Sub Tabs Navigation */
+        .sub-tabs {
+            display: flex;
+            gap: 12px;
+            margin-bottom: 20px;
+            border-bottom: 1px solid var(--border-color);
+            padding-bottom: 10px;
+        }
+        .sub-tab-btn {
+            background: none;
+            border: none;
+            font-size: 16px;
+            font-weight: 500;
+            color: var(--text-secondary);
+            padding: 8px 16px;
+            cursor: pointer;
+            position: relative;
+            transition: color 0.2s;
+        }
+        .sub-tab-btn:hover {
+            color: var(--text-primary);
+        }
+        .sub-tab-btn.active {
+            color: var(--price-primary);
+            font-weight: 600;
+        }
+        .sub-tab-btn.active::after {
+            content: '';
+            position: absolute;
+            bottom: -11px;
+            left: 0;
+            width: 100%;
+            height: 2px;
+            background-color: var(--price-primary);
+        }
+
+        /* Filter Controls */
+        .price-filter-controls {
+            display: flex;
+            gap: 20px;
+            align-items: center;
+            background: white;
+            padding: 12px 20px;
+            border-radius: 8px;
+            margin-bottom: 20px;
+            box-shadow: 0 1px 4px rgba(0,0,0,0.05);
+        }
+        .filter-label {
+            font-weight: 600;
+            font-size: 14px;
+            color: var(--text-primary);
+        }
+        .price-checkbox-group {
+            display: flex;
+            gap: 16px;
+        }
+        .price-checkbox-label {
+            display: flex;
+            align-items: center;
+            gap: 6px;
+            cursor: pointer;
+            font-size: 14px;
+            user-select: none;
+        }
+        .price-checkbox-label input {
+            accent-color: var(--price-primary);
+            width: 16px;
+            height: 16px;
+        }
+
+        /* Sub Tab Content */
+        .sub-tab-content {
+            display: none;
+            animation: fadeIn 0.3s ease;
+        }
+        .sub-tab-content.active {
+            display: block;
+        }
+
+        /* Tables and Cards */
+        .price-card {
+            background: var(--card-bg);
+            border-radius: 8px;
+            box-shadow: 0 2px 8px rgba(0, 0, 0, 0.05);
+            overflow: hidden;
+            margin-bottom: 24px;
+        }
+        .table-container {
+            overflow-x: auto;
+        }
+        table {
+            width: 100%;
+            border-collapse: collapse;
+            font-size: 14px;
+        }
+        th {
+            background-color: #f7f8fa;
+            color: var(--text-secondary);
+            font-weight: 500;
+            text-align: left;
+            padding: 12px 16px;
+            border-bottom: 1px solid var(--border-color);
+            white-space: nowrap;
+        }
+        td {
+            padding: 12px 16px;
+            border-bottom: 1px solid var(--border-color);
+            color: var(--text-primary);
+            vertical-align: middle;
+        }
+        tr:last-child td {
+            border-bottom: none;
+        }
+        tr:hover td {
+            background-color: #fafafa;
+        }
+        .company-cell { font-weight: 600; }
+        .company-volcengine { color: var(--price-primary); }
+        .company-openai { color: var(--openai-green); }
+        .company-google { color: var(--google-blue); }
+        .company-anthropic { color: var(--anthropic-orange); }
+        .company-alibaba { color: var(--alibaba-red); }
+        .model-name { font-weight: 600; }
+        .price-cell { font-family: "SF Mono", Consolas, monospace; }
+        .condition-cell { color: var(--text-secondary); font-size: 13px; }
+        .date-cell { color: var(--text-secondary); font-size: 13px; white-space: nowrap; }
+        
+        .badge { display: inline-block; padding: 2px 6px; border-radius: 4px; font-size: 12px; background-color: #e8f3ff; color: #1664ff; }
+        .badge-na { background-color: #f2f3f5; color: #86909c; }
+        .badge-openai { background-color: #e0f2fe; color: #0284c7; }
+        .badge-google { background-color: #e8f0fe; color: #1967d2; }
+        .badge-anthropic { background-color: #fcece8; color: #c05621; }
+        .badge-alibaba { background-color: #fff3e0; color: #ff6a00; }
+        
+        .vis-cell { width: 200px; min-width: 150px; }
+        .bar-container { display: flex; align-items: center; gap: 8px; }
+        .bar-wrapper { flex-grow: 1; background-color: #f2f3f5; height: 6px; border-radius: 3px; overflow: hidden; width: 100px; }
+        .bar { height: 100%; background: linear-gradient(90deg, #1664ff, #60a5fa); border-radius: 3px; transition: width 0.3s ease; }
+        .bar-openai { background: linear-gradient(90deg, #10a37f, #34d399); }
+        .bar-google { background: linear-gradient(90deg, #4285F4, #34A853); }
+        .bar-anthropic { background: linear-gradient(90deg, #d97757, #f6ad55); }
+        .bar-alibaba { background: linear-gradient(90deg, #ff6a00, #ff9e45); }
+        .usd-price { font-family: "SF Mono", Consolas, monospace; font-size: 12px; color: #86909c; min-width: 50px; text-align: right; }
+        .exchange-rate-info { background: rgba(255, 255, 255, 0.2); padding: 4px 10px; border-radius: 4px; font-size: 12px; display: inline-block; margin-top: 5px; }
+    </style>
+</head>
+<body>
+<!-- Main Tabs -->
+<div class="main-nav-bar">
+<button class="main-nav-btn active" onclick="switchMainTab('news')">AI 重点新闻周报</button>
+<button class="main-nav-btn" onclick="switchMainTab('price')">大模型价格对比</button>
+</div>
+<!-- ================= NEWS VIEW ================= -->
+<div class="view-container active" id="news-view">
+<div class="news-dashboard-header">
+<div class="news-banner-container">
+<img alt="AI News Banner" class="news-banner-img" src="https://images.unsplash.com/photo-1677442136019-21780ecad995?q=80&amp;w=1600&amp;auto=format&amp;fit=crop"/>
+<div class="news-banner-overlay">
+<h1>AI 重点新闻周报</h1>
+<p>📅 2026.01.29 - 2026.02.05 | 核心精选</p>
+</div>
+</div>
+<div class="news-filter-container">
+<div class="news-checkbox-group">
+<label class="news-checkbox-btn">
+<input checked="" onchange="toggleNewsAll(this)" type="checkbox" value="all"/>
+<span class="news-btn-content">🏢 全部</span>
+</label>
+<label class="news-checkbox-btn">
+<input checked="" onchange="filterNews()" type="checkbox" value="anthropic"/>
+<span class="news-btn-content">Anthropic</span>
+</label>
+<label class="news-checkbox-btn">
+<input checked="" onchange="filterNews()" type="checkbox" value="openai"/>
+<span class="news-btn-content">OpenAI</span>
+</label>
+<label class="news-checkbox-btn">
+<input checked="" onchange="filterNews()" type="checkbox" value="google"/>
+<span class="news-btn-content">Google</span>
+</label>
+<label class="news-checkbox-btn">
+<input checked="" onchange="filterNews()" type="checkbox" value="alibaba"/>
+<span class="news-btn-content">阿里巴巴</span>
+</label>
+<label class="news-checkbox-btn">
+<input checked="" onchange="filterNews()" type="checkbox" value="tencent"/>
+<span class="news-btn-content">腾讯</span>
+</label>
+<label class="news-checkbox-btn">
+<input checked="" onchange="filterNews()" type="checkbox" value="other"/>
+<span class="news-btn-content">其他</span>
+</label>
+</div>
+</div>
+</div>
+<div class="timeline-container">
+<div class="matrix-grid">
+<!-- Table Headers -->
+<div></div>
+<div class="col-header header-overseas">🌍 海外重点公司<br/><span style="font-size:0.8rem; opacity:0.8">OpenAI / Google / Anthropic</span></div>
+<div class="col-header header-domestic">🇨🇳 国内重点公司<br/><span style="font-size:0.8rem; opacity:0.8">腾讯 / 阿里 / 字节</span></div>
+<div class="col-header header-emerging">🚀 新兴/其他公司<br/><span style="font-size:0.8rem; opacity:0.8">xAI / Perplexity / 硬件</span></div>
+<!-- Week 1 Row -->
+<div class="week-row"><div class="time-label"><span class="time-date">02.06</span><div class="time-week">02.06 - 02.12</div></div><div class="news-cell news-grid-2col"><div class="news-item" data-company="other"><span class="date-badge">2026-02-06</span><div class="news-title"><span class="tag-tech">发布</span> <a href="https://www.aibase.com/zh/news/25320" target="_blank">​OpenAI 发布 GPT-5.3-Codex：编程效能跃升，开启“AI 同事”实操时代 OpenAI CEO Sam...</a></div><div class="news-desc">​OpenAI 发布 GPT-5.3-Codex：编程效能跃升，开启“AI 同事”实操时代 OpenAI CEO Sam Altman宣布推出编程大模型GPT-5.3-Codex，该模型在技术指标和应用层面实现突破，推动AI辅助编程进入新阶...</div><details class="details-container"><summary class="details-summary">查看详细解读</summary><div class="details-content"><p>​OpenAI 发布 GPT-5.3-Codex：编程效能跃升，开启“AI 同事”实操时代 OpenAI CEO Sam Altman宣布推出编程大模型GPT-5.3-Codex，该模型在技术指标和应用层面实现突破，推动AI辅助编程进入新阶段。在SWE-Bench Pro评测中达到57%，在TerminalBench2.0和OSWorld评测中表现优异。</p></div></details></div><div class="news-item" data-company="other"><span class="date-badge">2026-02-06</span><div class="news-title"><span class="tag-tech">发布</span> <a href="https://www.aibase.com/zh/news/25314" target="_blank">​Anthropic 发布 Claude Opus 4.6：首推百万级上下文，深耕自动化办公与编程 Anthropic ...</a></div><div class="news-desc">​Anthropic 发布 Claude Opus 4.6：首推百万级上下文，深耕自动化办公与编程 Anthropic 推出新一代旗舰AI模型Claude Opus4.6，更新节奏迅速。新版本聚焦“自主性”与“生产力”，旨在为开发者和企业办...</div><details class="details-container"><summary class="details-summary">查看详细解读</summary><div class="details-content"><p>​Anthropic 发布 Claude Opus 4.6：首推百万级上下文，深耕自动化办公与编程 Anthropic 推出新一代旗舰AI模型Claude Opus4.6，更新节奏迅速。新版本聚焦“自主性”与“生产力”，旨在为开发者和企业办公提供深度智能化支持。技术亮点包括首次引入100万token超大上下文窗口，显著提升模型处理长文本能力。</p></div></details></div></div><div class="news-cell"><div class="news-item" data-company="other"><span class="date-badge">2026-02-06</span><div class="news-title"><span class="tag-tech">资讯</span> <a href="https://www.aibase.com/zh/news/25329" target="_blank">微信屏蔽阿里千问红包链接，AI 营销战火延烧至社交生态 阿里“通义千问”春节免单活动红包链接遭微信屏蔽，显示诱导下载，用...</a></div><div class="news-desc">微信屏蔽阿里千问红包链接，AI 营销战火延烧至社交生态 阿里“通义千问”春节免单活动红包链接遭微信屏蔽，显示诱导下载，用户需通过浏览器访问。千问App已调整为复制口令分享，以应对拦截。</div><details class="details-container"><summary class="details-summary">查看详细解读</summary><div class="details-content"><p>微信屏蔽阿里千问红包链接，AI 营销战火延烧至社交生态 阿里“通义千问”春节免单活动红包链接遭微信屏蔽，显示诱导下载，用户需通过浏览器访问。千问App已调整为复制口令分享，以应对拦截。</p></div></details></div><div class="news-item" data-company="other"><span class="date-badge">2026-02-06</span><div class="news-title"><span class="tag-tech">资讯</span> <a href="https://www.aibase.com/zh/news/25319" target="_blank">体验AI一句话下单，千问APP发放千万张免单券助力“奶茶自由” 千问APP推出“春节30亿大免单”活动，首波福利以“请全...</a></div><div class="news-desc">体验AI一句话下单，千问APP发放千万张免单券助力“奶茶自由” 千问APP推出“春节30亿大免单”活动，首波福利以“请全国人民喝奶茶”为主题，用户更新至最新版本即可无门槛领取25元奶茶免单卡，旨在通过AI与生活服务结合，为年轻群体提供科技感...</div><details class="details-container"><summary class="details-summary">查看详细解读</summary><div class="details-content"><p>体验AI一句话下单，千问APP发放千万张免单券助力“奶茶自由” 千问APP推出“春节30亿大免单”活动，首波福利以“请全国人民喝奶茶”为主题，用户更新至最新版本即可无门槛领取25元奶茶免单卡，旨在通过AI与生活服务结合，为年轻群体提供科技感新春福利。</p></div></details></div></div><div class="news-cell"></div></div><div class="week-row"><div class="time-label"><span class="time-date">1.29</span><div class="time-week">1.29 - 2.05</div></div><div class="news-cell news-grid-2col">
+<div class="news-item" data-company="google">
+<span class="date-badge">2026.02.05</span>
+<div class="news-title">
+<span class="tag-biz">财报</span>
+<a href="https://mp.weixin.qq.com/s/CiEjOAMAaZr3gEMqsY_CFQ">谷歌财报：1850亿美元“不得不花”</a>
+</div>
+<div class="news-desc">
+                                谷歌预计 2026 年资本支出高达 1850 亿美元，确认与苹果深度合作开发下一代模型。
+                            </div>
+<details class="details-container">
+<summary class="details-summary">查看详细解读</summary>
+<div class="details-content">
+<p><strong>核心披露：</strong><br/>Alphabet 财报电话会预警 2026 年资本支出将达 1750-1850 亿美元，主要用于服务器与数据中心以应对算力短缺。CEO 皮查伊正式确认<strong>与苹果达成深度合作</strong>，Gemini 技术将驱动苹果下一代模型。此外，他反驳了“AI 杀死 SaaS”的观点，指出 Salesforce 等 95% 的头部 SaaS 公司都在使用 Gemini。</p>
+<div class="takeaway-box">
+<span class="takeaway-title">Takeaway</span>
+                                        谷歌正在进行一场豪赌，用天量资本支出换取 AI 时代的入场券。与苹果的结盟是其防止被移动端边缘化的关键一手。同时，通过绑定 SaaS 巨头，谷歌试图证明自己是 AI 赋能者而非掠夺者。
+                                    </div>
+</div>
+</details>
+</div>
+<div class="news-item" data-company="anthropic">
+<span class="date-badge">2026.02.04</span>
+<div class="news-title">
+<span class="tag-tech">重磅</span>
+<a href="https://mp.weixin.qq.com/s/Pa61AAq3yL79e5ZcwHaVJw">Claude Cowork 发布：SaaS 行业大地震</a>
+</div>
+<div class="news-desc">
+                                Anthropic 发布智能体平台 Claude Cowork 及 11 款职能插件，引发华尔街恐慌，SaaS 概念股暴跌近万亿。
+                            </div>
+<details class="details-container">
+<summary class="details-summary">查看详细解读</summary>
+<div class="details-content">
+<p><strong>核心事件：</strong><br/>Anthropic 正式推出 <strong>Claude Cowork</strong> 及其配套的 11 款职能插件（覆盖财务、法律、销售等）。与传统的 Copilot 不同，Cowork 运行在隔离虚拟机中，拥有接管键鼠和文件系统的权限，能像“独立员工”一样自主规划并完成生成财报、审查合同等复杂工作。</p>
+<div class="takeaway-box">
+<span class="takeaway-title">Takeaway</span>
+                                        AI 从 Copilot 向 Agent 进化的转折点。如果 AI 能像员工一样独立完成复杂工作，传统 SaaS 软件的“工具属性”将面临降维打击。华尔街的抛售反映了市场对 SaaS 商业模式被颠覆的真实担忧。
+                                    </div>
+</div>
+</details>
+</div>
+<div class="news-item" data-company="anthropic">
+<span class="date-badge">2026.02.03</span>
+<div class="news-title">
+<span class="tag-tech">重磅</span>
+<a href="https://www.aibase.com/zh/news/25217">Anthropic 祭出“代号 Fennec”：Claude 5 震撼曝光</a>
+</div>
+<div class="news-desc">
+                                下一代模型 Claude 5 (Sonnet5) 已部署，性能吊打旗舰，价格直降五成，首创“蜂群”开发模式。
+                            </div>
+<details class="details-container">
+<summary class="details-summary">查看详细解读</summary>
+<div class="details-content">
+<p><strong>核心亮点：</strong><br/>代号 Fennec 的 <strong>Claude Sonnet5</strong> 被视为“史上最强编程模型”。它直接在谷歌 TPU 上优化，推理成本仅为 Opus4.5 的 50%，但性能越级吊打。其最大的杀手锏是 <strong>Dev Team（蜂群模式）</strong>：只需一个需求，模型自动生成总指挥、前端、后端、测试等子智能体，并行协作完成工程级交付。</p>
+<div class="takeaway-box">
+<span class="takeaway-title">Takeaway</span>
+                                        这是对 OpenAI Codex 全家桶的降维打击。Anthropic 不仅在卷模型性能（SWE-Bench 破 80%），更在卷<strong>“组织形式”</strong>。未来的编程 AI 不再是一个助手，而是一支随叫随到的“幽灵开发团队”。
+                                    </div>
+</div>
+</details>
+</div>
+<div class="news-item" data-company="anthropic">
+<span class="date-badge">2026.02.03</span>
+<div class="news-title">
+<span class="tag-biz">财报</span>
+<a href="https://mp.weixin.qq.com/s/Z4Ejm0oQ-MOAUYwymOWPQg">Anthropic 营收预期上调 40%</a>
+</div>
+<div class="news-desc">
+                                今年销售额预计激增至 180 亿美元，但高昂的训练成本（预计亏损 110 亿）将盈利时间推迟至 2028 年。
+                            </div>
+<details class="details-container">
+<summary class="details-summary">查看详细解读</summary>
+<div class="details-content">
+<p><strong>核心数据：</strong><br/>Anthropic 内部预测显示，2026 年营收目标为 180 亿美元，2027 年更将达到惊人的 550 亿美元。这一增长主要由 <strong>Claude Code</strong> 驱动，该产品去年 11 月年化收入已超 10 亿美元。然而，为维持技术领先，公司预计今年在模型训练和运营上的支出将高达 110 亿美元，导致现金流转正节点从原计划的 2027 年延后至 2028 年。</p>
+<div class="takeaway-box">
+<span class="takeaway-title">Takeaway</span>
+                                        AI 军备竞赛进入“深水区”。营收虽猛增，但模型训练成本的指数级上升让盈利平衡点后移。Claude Code 的成功再次印证：<strong>垂直场景的生产力工具（如编程助手）是当前 B 端变现的最强抓手。</strong>
+</div>
+</div>
+</details>
+</div>
+<div class="news-item" data-company="anthropic">
+<span class="date-badge">2026.02.03</span>
+<div class="news-title">
+<span class="tag-strategy">竞争</span>
+<a href="https://mp.weixin.qq.com/s/U2SqI7-cjvxj54cdasTWGA">Anthropic API 收入或超 OpenAI</a>
+</div>
+<div class="news-desc">
+                                得益于 Claude Code 在企业界的良好口碑，Anthropic 2025 年企业 API 收入预计将反超 OpenAI。
+                            </div>
+<details class="details-container">
+<summary class="details-summary">查看详细解读</summary>
+<div class="details-content">
+<p><strong>竞争格局：</strong><br/>尽管 OpenAI 在整体市场份额上仍占优，但在高价值的企业级 API 市场，Anthropic 正凭借 Claude 3.5 Sonnet 的卓越代码能力和更“稳健”的企业服务形象攻城略地。许多大型企业（如 Intuit、Databricks）已将 Anthropic 视为首选供应商，认为其产品更能直接提升员工生产力。</p>
+<div class="takeaway-box">
+<span class="takeaway-title">Takeaway</span>
+                                        B 端市场风向正在转变。企业客户不再迷信模型名气，而是用脚投票选择了能带来<strong>实际生产力提升</strong>的工具。OpenAI 的“大而全”平台战略与 Anthropic 的“专而精”工具路线，将在 2026 年展开终极对决。
+                                    </div>
+</div>
+</details>
+</div>
+<div class="news-item" data-company="openai">
+<span class="date-badge">2026.02.03</span>
+<div class="news-title">
+<span class="tag-tech">技术</span>
+<a href="https://www.aibase.com/zh/news/25243">GPT-5.2 系列推理速度提升 40%</a>
+</div>
+<div class="news-desc">
+                                OpenAI 宣布旗舰模型 GPT-5.2 推理速度提升 40%，价格不变，加速实时应用落地。
+                            </div>
+<details class="details-container">
+<summary class="details-summary">查看详细解读</summary>
+<div class="details-content">
+<p><strong>性能飞跃：</strong><br/>OpenAI 通过优化推理堆栈，在保持模型架构和权重不变（即智能水平不打折）的前提下，将 <strong>GPT-5.2</strong> 和 <strong>GPT-5.2-Codex</strong> 的推理速度提升了 40%。这一改进对所有 API 客户免费开放，且无需修改任何代码。</p>
+<div class="takeaway-box">
+<span class="takeaway-title">Takeaway</span>
+                                        “天下武功，唯快不破”。在模型能力趋同的背景下，<strong>延迟（Latency）</strong>成为了新的竞争高地。40% 的提速意味着 AI Agent 可以更流畅地执行多步任务，编码助手也能更跟手，直接提升了开发者体验。
+                                    </div>
+</div>
+</details>
+</div>
+<div class="news-item" data-company="google">
+<span class="date-badge">2026.02.03</span>
+<div class="news-title">
+<span class="tag-tech">交互</span>
+<a href="https://www.aibase.com/zh/news/25257">Gemini 将可直接操控安卓手机</a>
+</div>
+<div class="news-desc">
+                                Google 测试“屏幕自动化”功能，让 Gemini 帮你点咖啡、查预约，向“全能管家”进化。
+                            </div>
+<details class="details-container">
+<summary class="details-summary">查看详细解读</summary>
+<div class="details-content">
+<p><strong>功能前瞻：</strong><br/>在 Google App 测试版中，一项代号为“倭黑猩猩”的新功能曝光。它利用 Android 底层的屏幕自动化技术，允许 <strong>Gemini</strong> 识别屏幕内容并模拟点击，帮助用户完成跨应用的任务（如在购物软件下单）。Google 强调了隐私保护，截图仅用于本地处理或经审核优化。</p>
+<div class="takeaway-box">
+<span class="takeaway-title">Takeaway</span>
+                                        这是迈向 <strong>LAM (Large Action Model)</strong> 的关键一步。Google 终于开始利用其 Android 生态的主场优势。如果 Gemini 能打通 App 孤岛，它将从一个“陪聊的”变成一个真正“能干活的”OS 级智能体。
+                                    </div>
+</div>
+</details>
+</div>
+<div class="news-item" data-company="google">
+<span class="date-badge">2026.02.03</span>
+<div class="news-title">
+<span class="tag-tech">技术</span>
+<a href="https://www.aibase.com/zh/news/25201">Google 发布 Conductor</a>
+</div>
+<div class="news-desc">
+                                为 Gemini 打造的开源扩展，通过结构化工作流解决 AI 编程中的“上下文丢失”痛点。
+                            </div>
+<details class="details-container">
+<summary class="details-summary">查看详细解读</summary>
+<div class="details-content">
+<p><strong>技术突破：</strong><br/>Google 推出的 <strong>Conductor</strong> 是一个专为 Gemini 模型打造的开源扩展程序。它旨在解决开发者在使用 AI 编程时最头疼的“健忘”问题。通过将松散的代码生成转化为结构化的工作流，Conductor 能够持久化保存开发上下文，使 AI 在处理跨文件、长周期的复杂任务时，依然能保持连贯的记忆和逻辑。</p>
+<div class="takeaway-box">
+<span class="takeaway-title">Takeaway</span>
+                                        Google 正在从单纯的模型能力竞争（Gemini vs GPT）转向“开发者体验”竞争。Conductor 的发布表明，<strong>“长效记忆”和“工作流整合”</strong>将是下一阶段 AI 编程工具（如 Cursor、Windsurf）的决胜点。
+                                    </div>
+</div>
+</details>
+</div>
+<div class="news-item" data-company="google">
+<span class="date-badge">2026.02.02</span>
+<div class="news-title">
+<span class="tag-strategy">格局</span>
+<a href="https://mp.weixin.qq.com/s/u0PYkAkMqxfiv7Wr1xnIKw">美AI格局剧变：ChatGPT份额跌破50%</a>
+</div>
+<div class="news-desc">
+                                过去一年 ChatGPT 份额降至 45.3%，Gemini (25.1%) 和 Grok (15.2%) 强势崛起，用户开始“货比三家”。
+                            </div>
+<details class="details-container">
+<summary class="details-summary">查看详细解读</summary>
+<div class="details-content">
+<p><strong>市场洗牌：</strong><br/>数据显示，ChatGPT 在美国市场的统治力正在动摇，份额从 69.1% 滑落至 45.3%。两大挑战者涨势迅猛：<strong>Gemini</strong> 凭借谷歌安卓生态的强力导流，访问量暴涨 647%；<strong>Grok</strong> 则依靠马斯克 X 平台的巨大流量，一年内份额激增 10 倍，跻身前三。</p>
+<p><strong>竞争新态势：</strong><br/>用户不再“忠诚”于单一模型，约 20% 的用户同时使用两款以上产品。竞争重点从“用户量”转向了“粘性”，例如 Claude 虽然用户数较少，但人均使用时长已突破 30 分钟，远超行业平均。</p>
+<div class="takeaway-box">
+<span class="takeaway-title">Takeaway</span>
+                                        垄断时代结束，战国时代开启。<strong>“生态入口”</strong>（如安卓、X）成为了后发者的最大超车杠杆。未来的赢家可能不是最聪明的模型，而是最容易触达用户的那个。
+                                    </div>
+</div>
+</details>
+</div>
+</div>
+<!-- Domestic Column -->
+<div class="news-cell">
+<div class="news-item" data-company="tencent">
+<span class="date-badge">2026.02.02</span>
+<div class="news-title">
+<span class="tag-biz">深度</span>
+<a href="https://mp.weixin.qq.com/s/fWwQ5Taw8l8n5akqPVPPxA">元宝派：10亿红包背后的“流量焦虑”</a>
+</div>
+<div class="news-desc">
+                                10亿红包虽刷屏，但产品体验断层，缺乏社交沉淀，被批“为了营销而营销”。
+                            </div>
+<details class="details-container">
+<summary class="details-summary">查看详细解读</summary>
+<div class="details-content">
+<p><strong>现象分析：</strong><br/>面对字节跳动“豆包”拿下春晚独家合作的压力，腾讯选择在自己的社交腹地发起“红包闪电战”。虽然通过 10 亿补贴实现了短期刷屏，但<strong>元宝 App 内部缺乏承接场景</strong>。用户被红包拉进来，发现“元宝派”只是一个功能生硬的聊天室，领完钱即走，难以形成真正的社交留存。</p>
+<div class="takeaway-box">
+<span class="takeaway-title">Takeaway</span>
+                                        红包是战术，产品是战略。微信红包当年的成功建立在“支付+社交”的高频刚需之上，而 AI 助手天然缺乏这种土壤。如果不解决<strong>“用户为什么要在这里聊”</strong>的根本问题，再多的补贴也只是一场虚假的繁荣。
+                                    </div>
+</div>
+</details>
+</div>
+<div class="news-item" data-company="alibaba">
+<span class="date-badge">2026.02.03</span>
+<div class="news-title">
+<span class="tag-biz">商业</span>
+<a href="http://m.toutiao.com/group/7602461584900588067/">千问启动“春节请客计划”：30亿免单</a>
+</div>
+<div class="news-desc">
+                                阿里投入 30 亿巨资，联合淘宝、盒马、飞猪等全生态业务，请全国人民“吃喝玩乐”。
+                            </div>
+<details class="details-container">
+<summary class="details-summary">查看详细解读</summary>
+<div class="details-content">
+<p><strong>活动详情：</strong><br/>2月6日正式上线，通义千问 App 联合淘宝闪购、飞猪、大麦、盒马、高德等阿里全生态业务，投入 30 亿元人民币。用户在 App 内互动即可赢取“吃喝玩乐”免单机会。这是 AI 行业有史以来规模最大、覆盖实体场景最广的春节营销活动。</p>
+<div class="takeaway-box">
+<span class="takeaway-title">Takeaway</span>
+                                        阿里正在用最擅长的“造节”打法推广 AI。不同于百度的“技术流”，阿里选择将 AI 隐形于“免单”福利之下，通过高频的生活场景（买菜、订票、打车）强行培养用户使用习惯，意在打造 AI 时代的“国民级入口”。
+                                    </div>
+</div>
+</details>
+</div>
+<div class="news-item" data-company="tencent">
+<span class="date-badge">2026.02.03</span>
+<div class="news-title">
+<span class="tag-biz">营销</span>
+<a href="http://m.toutiao.com/group/7602873949969498665/">腾讯元宝打响“10亿红包”补贴战</a>
+</div>
+<div class="news-desc">
+                                元宝 App 上线春节 10 亿现金红包活动，试图复刻“微信支付”奇迹，快速抢占 C 端市场。
+                            </div>
+<details class="details-container">
+<summary class="details-summary">查看详细解读</summary>
+<div class="details-content">
+<p><strong>战略意图：</strong><br/>腾讯元宝祭出“春节 10 亿红包”大招，用户可直接抽取现金并提现。尽管遭遇微信生态的严厉风控（被屏蔽），但其“裂变拉新”的野心暴露无遗。这是腾讯在 AI C 端产品上的一次“背水一战”，试图通过高额补贴在短时间内缩短与头部产品的日活差距。</p>
+<div class="takeaway-box">
+<span class="takeaway-title">Takeaway</span>
+                                        2026 年春节成了 AI 应用的“决战时刻”。巨头们不再满足于“秀肌肉”，而是开始了真金白银的“抢人头”。腾讯的“红包雨”与阿里的“免单潮”形成了鲜明对比，这场补贴大战或许将决定谁能成为中国的 ChatGPT。
+                                    </div>
+</div>
+</details>
+</div>
+<div class="news-item" data-company="tencent">
+<span class="date-badge">2026.02.03</span>
+<div class="news-title">
+<span class="tag-biz">监管</span>
+<a href="https://www.aibase.com/zh/news/25256">腾讯元宝红包被微信“封杀”</a>
+</div>
+<div class="news-desc">
+                                元宝春节红包活动因触发诱导分享规则，被微信紧急拦截，被迫改为“口令”模式。
+                            </div>
+<details class="details-container">
+<summary class="details-summary">查看详细解读</summary>
+<div class="details-content">
+<p><strong>事件始末：</strong><br/>腾讯旗下的 AI 应用“腾讯元宝”斥资 10 亿发起的春节红包活动，因分享裂变过快，触发了微信的防诱导分享风控机制。微信“大义灭亲”拦截了活动链接，迫使元宝团队紧急将分享方式调整为“口令红包”。微信官方回应称“平台规则一视同仁，用户体验第一”。</p>
+<div class="takeaway-box">
+<span class="takeaway-title">Takeaway</span>
+                                        这场“自家兄弟”的摩擦透露出两个信号：一是元宝的推广力度极大，流量瞬间爆发；二是微信生态对 AI 应用的社交裂变持谨慎态度。对于 AI 开发者而言，<strong>如何在微信的“围墙花园”内合规增长</strong>，仍是一道难题。
+                                    </div>
+</div>
+</details>
+</div>
+<div class="news-item" data-company="alibaba">
+<span class="date-badge">2026.02.03</span>
+<div class="news-title">
+<span class="tag-biz">商业</span>
+<a href="https://www.aibase.com/zh/news/25200">阿里通义千问冠名四大春晚</a>
+</div>
+<div class="news-desc">
+                                投入 30 亿，AI 智能体将作为“演员”深度参与四大卫视春晚，展示视频生成与实时互动能力。
+                            </div>
+<details class="details-container">
+<summary class="details-summary">查看详细解读</summary>
+<div class="details-content">
+<p><strong>营销动作：</strong><br/>阿里通义千问 App 继投入 30 亿元启动“春节请客计划”后，再获<strong>东方卫视、浙江卫视、江苏卫视及河南卫视</strong>四大马年春晚的独家冠名权。与以往仅展示 Logo 不同，通义千问将作为“AI 演员”深度参与节目创作，展示 AI 视频生成、图像识别和实时问答能力，并配合千问 APP 推出互动抢红包活动。</p>
+<div class="takeaway-box">
+<span class="takeaway-title">Takeaway</span>
+                                        这是 AI 大模型产品首次大规模“入侵”国民级传统媒体盛会。阿里的策略很明确：<strong>通过高频、高曝光场景完成用户心智教育</strong>，将 AI 从“极客玩具”转化为“全民工具”，加速大模型的商业化落地与用户渗透。
+                                    </div>
+</div>
+</details>
+</div>
+</div>
+<!-- Emerging Column -->
+<div class="news-cell">
+<div class="news-item" data-company="other">
+<span class="date-badge">2026.02.03</span>
+<div class="news-title">
+<span class="tag-strategy">战略</span>
+<a href="https://www.geekpark.net/news/359849">SpaceX 与 xAI 合并传闻</a>
+</div>
+<div class="news-desc">
+                                传马斯克计划合并 SpaceX 与 xAI，新实体估值或达 2500 亿美元，打造万亿级科技巨头。
+                            </div>
+<details class="details-container">
+<summary class="details-summary">查看详细解读</summary>
+<div class="details-content">
+<p><strong>交易细节：</strong><br/>市场传闻马斯克计划将旗下的航天巨头 <strong>SpaceX</strong> 与人工智能公司 <strong>xAI</strong> 进行合并。若合并达成，新实体的估值可能高达 <strong>2500 亿美元</strong>，成为科技界罕见的万亿级超级独角兽。此举可能旨在整合 SpaceX 的硬件/算力资源（如星链数据、超算中心）与 xAI 的算法能力，打造更强的技术闭环。</p>
+<div class="takeaway-box">
+<span class="takeaway-title">Takeaway</span>
+                                        马斯克的“万亿帝国”拼图正在合拢。这次合并如果成真，将是<strong>“算力+能源+数据+硬件”</strong>的终极整合。SpaceX 的星链数据和超算集群将为 xAI 提供独特优势，直接挑战微软+OpenAI 的联盟地位。
+                                    </div>
+</div>
+</details>
+</div>
+<div class="news-item" data-company="other">
+<span class="date-badge">2026.02.04</span>
+<div class="news-title">
+<span class="tag-strategy">开源</span>
+<a href="https://www.theinformation.com/newsletters/ai-agenda/openclaw-fka-clawdbot-matters?rc=ifnkyd">OpenClaw (前Clawdbot) 爆火：本地优先的AI数据工具</a>
+</div>
+<div class="news-desc">
+                                OpenClaw（原名Clawdbot）在GitHub上迅速走红，作为一个开源的本地优先数据工具，它解决了开发者对数据主权的担忧。
+                            </div>
+<details class="details-container">
+<summary class="details-summary">查看详细解读</summary>
+<div class="details-content">
+<p><strong>为何火爆：</strong><br/>OpenClaw 的前身是 Clawdbot，更名后它以“本地优先”（Local-First）的理念迅速吸引了大量开发者。在数据隐私日益敏感的今天，OpenClaw 允许用户在本地环境完全掌控数据抓取和处理流程，无需依赖昂贵的云端 API，也避免了数据泄露风险。其开源特性更是激发了社区的创造力，插件生态正在快速形成。</p>
+<div class="takeaway-box">
+<span class="takeaway-title">Takeaway</span>
+                                        随着开发者对数据隐私和控制权的重视，OpenClaw 这类“本地优先”工具正在重塑 AI 数据基础设施格局。它的成功证明了：<strong>在云端大模型之外，构建在本地的安全、可控的数据管道同样拥有巨大的市场潜力。</strong>
+</div>
+</div>
+</details>
+</div>
+</div>
+</div>
+</div>
+</div>
+</div>
+<!-- ================= PRICE VIEW ================= -->
+<div class="view-container" id="price-view">
+<div class="price-container">
+<div class="news-dashboard-header" style="margin-bottom: 24px;">
+<div class="news-banner-container">
+<img alt="Price Dashboard Banner" class="news-banner-img" src="https://images.unsplash.com/photo-1518770660439-4636190af475?q=80&amp;w=2070&amp;auto=format&amp;fit=crop"/>
+<div class="news-banner-overlay">
+<h1>大模型价格跟踪</h1>
+<p>更新时间：2026-01-30 | 数据来源：官方网站</p>
+<div style="margin-top: 10px; font-size: 0.9rem; background: rgba(0,0,0,0.3); display: inline-block; padding: 4px 12px; border-radius: 4px;">汇率参考：1 USD ≈ 6.95 CNY</div>
+</div>
+</div>
+</div>
+<div class="sub-tabs">
+<button class="sub-tab-btn active" onclick="switchPriceTab('llm')">大语言模型 (LLM)</button>
+<button class="sub-tab-btn" onclick="switchPriceTab('video')">视频生成模型 (Video)</button>
+<button class="sub-tab-btn" onclick="switchPriceTab('image')">图像生成模型 (Image)</button>
+<button class="sub-tab-btn" onclick="switchPriceTab('chart')">价格趋势 (Scatter)</button>
+</div>
+<div class="price-filter-controls">
+<span class="filter-label">选择公司：</span>
+<div class="price-checkbox-group">
+<label class="price-checkbox-label">
+<input checked="" id="cb-volc" onchange="togglePriceCompany('火山引擎')" type="checkbox"/> 火山引擎 (Volcengine)
+                    </label>
+<label class="price-checkbox-label">
+<input checked="" id="cb-openai" onchange="togglePriceCompany('OpenAI')" type="checkbox"/> OpenAI
+                    </label>
+<label class="price-checkbox-label">
+<input checked="" id="cb-google" onchange="togglePriceCompany('Google')" type="checkbox"/> Google
+                    </label>
+<label class="price-checkbox-label">
+<input checked="" id="cb-anthropic" onchange="togglePriceCompany('Anthropic')" type="checkbox"/> Anthropic
+                    </label>
+<label class="price-checkbox-label">
+<input checked="" id="cb-alibaba" onchange="togglePriceCompany('阿里巴巴')" type="checkbox"/> 阿里巴巴 (Alibaba)
+                    </label>
+</div>
+</div>
+<div class="sub-tab-content active" id="llm-section">
+<div class="price-card">
+<div class="table-container">
+<table id="llmTable">
+<thead>
+<tr>
+<th>公司</th>
+<th>模型名称</th>
+<th>发布日期</th>
+<th>计费条件</th>
+<th>输入价格 (元/百万token)</th>
+<th>缓存命中价格 (元/百万token)</th>
+<th>输出价格 (元/百万token)</th>
+<th>价格对比 (输出/USD)</th>
+<th>价格更新日期</th>
+</tr>
+</thead>
+<tbody id="llmBody"></tbody>
+</table>
+</div>
+</div>
+</div>
+<div class="sub-tab-content" id="video-section">
+<div class="price-card">
+<div class="table-container">
+<table id="videoTable">
+<thead>
+<tr>
+<th>公司</th>
+<th>模型名称</th>
+<th>发布日期</th>
+<th>规格条件</th>
+<th>价格</th>
+<th>价格对比 (USD)</th>
+<th>价格更新日期</th>
+</tr>
+</thead>
+<tbody id="videoBody"></tbody>
+</table>
+</div>
+</div>
+</div>
+<div class="sub-tab-content" id="image-section">
+<div class="price-card">
+<div class="table-container">
+<table id="imageTable">
+<thead>
+<tr>
+<th>公司</th>
+<th>模型名称</th>
+<th>发布日期</th>
+<th>规格条件</th>
+<th>价格</th>
+<th>价格对比 (USD)</th>
+<th>价格更新日期</th>
+</tr>
+</thead>
+<tbody id="imageBody"></tbody>
+</table>
+</div>
+</div>
+</div>
+<div class="sub-tab-content" id="chart-section">
+<div class="price-card" style="padding: 20px;">
+<div id="priceScatterChart" style="width: 100%; height: 600px;"></div>
+</div>
+</div>
+</div>
+</div>
+<script>
+        // --- Main Tab Switching ---
+        function switchMainTab(tabName) {
+            // Update buttons
+            document.querySelectorAll('.main-nav-btn').forEach(btn => btn.classList.remove('active'));
+            event.target.classList.add('active');
+
+            // Update Views
+            document.querySelectorAll('.view-container').forEach(view => view.classList.remove('active'));
+            document.getElementById(tabName + '-view').classList.add('active');
+
+            // Resize chart if switching to price tab
+            if (tabName === 'price') {
+                setTimeout(() => {
+                    if (window.myChart) window.myChart.resize();
+                }, 100);
+            }
+        }
+
+        // --- News Filter Logic ---
+        function toggleNewsAll(source) {
+            const checkboxes = document.querySelectorAll('.news-checkbox-group input[type="checkbox"]:not([value="all"])');
+            checkboxes.forEach(cb => {
+                cb.checked = source.checked;
+            });
+            filterNews();
+        }
+
+        function filterNews() {
+            const allCheckbox = document.querySelector('.news-checkbox-group input[value="all"]');
+            const checkboxes = document.querySelectorAll('.news-checkbox-group input[type="checkbox"]:not([value="all"])');
+            const selectedCompanies = Array.from(checkboxes)
+                .filter(cb => cb.checked)
+                .map(cb => cb.value);
+            
+            // Update "All" checkbox state
+            if (selectedCompanies.length === checkboxes.length) {
+                allCheckbox.checked = true;
+                allCheckbox.indeterminate = false;
+            } else if (selectedCompanies.length === 0) {
+                allCheckbox.checked = false;
+                allCheckbox.indeterminate = false;
+            } else {
+                allCheckbox.checked = false;
+                allCheckbox.indeterminate = true;
+            }
+
+            const newsItems = document.querySelectorAll('.news-item');
+            
+            newsItems.forEach(item => {
+                const itemCompany = item.getAttribute('data-company');
+                
+                if (selectedCompanies.includes(itemCompany)) {
+                    item.style.display = 'block';
+                } else {
+                    item.style.display = 'none';
+                }
+            });
+        }
+
+        // --- Price Logic & Data ---
+        const EXCHANGE_RATE = 7.20; 
+
+        // Price Sub-Tab Switching
+        function switchPriceTab(tabId) {
+            document.querySelectorAll('.sub-tab-btn').forEach(btn => btn.classList.remove('active'));
+            event.target.classList.add('active');
+
+            document.querySelectorAll('.sub-tab-content').forEach(content => content.classList.remove('active'));
+            document.getElementById(tabId + '-section').classList.add('active');
+            
+            const filterControls = document.querySelector('.price-filter-controls');
+            if (tabId === 'chart') {
+                filterControls.style.display = 'none';
+                if (window.myChart) setTimeout(() => window.myChart.resize(), 50);
+            } else {
+                filterControls.style.display = 'flex';
+            }
+        }
+
+        function togglePriceCompany(companyName) {
+            let isChecked;
+            if (companyName === '火山引擎') isChecked = document.getElementById('cb-volc').checked;
+            else if (companyName === 'OpenAI') isChecked = document.getElementById('cb-openai').checked;
+            else if (companyName === 'Google') isChecked = document.getElementById('cb-google').checked;
+            else if (companyName === 'Anthropic') isChecked = document.getElementById('cb-anthropic').checked;
+            else if (companyName === '阿里巴巴') isChecked = document.getElementById('cb-alibaba').checked;
+            
+            const rows = document.querySelectorAll('#price-view tbody tr');
+            rows.forEach(row => {
+                if (row.getAttribute('data-company') === companyName) {
+                    row.style.display = isChecked ? '' : 'none';
+                }
+            });
+        }
+
+        const rawData = [
+          {
+            "company": "火山引擎",
+            "category": "LLM",
+            "model": "doubao-seed-1.8",
+            "condition": "输入长度 [0, 32] 且输出长度 [0, 0.2]",
+            "input_price": "0.80",
+            "cache_storage_price": "0.017",
+            "cache_hit_price": "0.16",
+            "output_price": "2.00",
+            "release_date": "2025-12-18"
+          },
+          {
+            "company": "火山引擎",
+            "category": "LLM",
+            "model": "doubao-seed-1.8",
+            "condition": "输入长度 [0, 32] 且输出长度 (0.2,+∞)",
+            "input_price": "0.80",
+            "cache_storage_price": "0.017",
+            "cache_hit_price": "0.16",
+            "output_price": "8.00",
+            "release_date": "2025-12-18"
+          },
+          {
+            "company": "火山引擎",
+            "category": "LLM",
+            "model": "doubao-seed-1.8",
+            "condition": "输入长度 (32, 128]",
+            "input_price": "1.20",
+            "cache_storage_price": "0.017",
+            "cache_hit_price": "0.16",
+            "output_price": "16.00",
+            "release_date": "2025-12-18"
+          },
+          {
+            "company": "火山引擎",
+            "category": "LLM",
+            "model": "doubao-seed-1.8",
+            "condition": "输入长度 (128, 256]",
+            "input_price": "2.40",
+            "cache_storage_price": "0.017",
+            "cache_hit_price": "0.16",
+            "output_price": "24.00",
+            "release_date": "2025-12-18"
+          },
+          {
+            "company": "火山引擎",
+            "category": "LLM",
+            "model": "doubao-seed-code",
+            "condition": "输入长度 [0, 32]",
+            "input_price": "1.20",
+            "cache_storage_price": "0.017",
+            "cache_hit_price": "0.24",
+            "output_price": "8.00",
+            "release_date": "2025-12-18"
+          },
+          {
+            "company": "火山引擎",
+            "category": "LLM",
+            "model": "doubao-seed-code",
+            "condition": "输入长度 (32, 128]",
+            "input_price": "1.40",
+            "cache_storage_price": "0.017",
+            "cache_hit_price": "0.24",
+            "output_price": "12.00",
+            "release_date": "2025-12-18"
+          },
+          {
+            "company": "火山引擎",
+            "category": "LLM",
+            "model": "doubao-seed-code",
+            "condition": "输入长度 (128, 256]",
+            "input_price": "2.80",
+            "cache_storage_price": "0.017",
+            "cache_hit_price": "0.24",
+            "output_price": "16.00",
+            "release_date": "2025-12-18"
+          },
+          {
+            "company": "火山引擎",
+            "category": "LLM",
+            "model": "doubao-seed-1.6",
+            "condition": "输入长度 [0, 32] 且输出长度 [0, 0.2]",
+            "input_price": "0.80",
+            "cache_storage_price": "0.017",
+            "cache_hit_price": "0.16",
+            "output_price": "2.00",
+            "release_date": "2025-06-11"
+          },
+          {
+            "company": "火山引擎",
+            "category": "LLM",
+            "model": "doubao-seed-1.6",
+            "condition": "输入长度 [0, 32] 且输出长度 (0.2,+∞)",
+            "input_price": "0.80",
+            "cache_storage_price": "0.017",
+            "cache_hit_price": "0.16",
+            "output_price": "8.00",
+            "release_date": "2025-06-11"
+          },
+          {
+            "company": "火山引擎",
+            "category": "LLM",
+            "model": "doubao-seed-1.6",
+            "condition": "输入长度 (32, 128]",
+            "input_price": "1.20",
+            "cache_storage_price": "0.017",
+            "cache_hit_price": "0.16",
+            "output_price": "16.00",
+            "release_date": "2025-06-11"
+          },
+          {
+            "company": "火山引擎",
+            "category": "LLM",
+            "model": "doubao-seed-1.6",
+            "condition": "输入长度 (128, 256]",
+            "input_price": "2.40",
+            "cache_storage_price": "0.017",
+            "cache_hit_price": "0.16",
+            "output_price": "24.00",
+            "release_date": "2025-06-11"
+          },
+          {
+            "company": "火山引擎",
+            "category": "LLM",
+            "model": "doubao-seed-1.6-lite",
+            "condition": "输入长度 [0, 32] 且输出长度 [0, 0.2]",
+            "input_price": "0.30",
+            "cache_storage_price": "0.017",
+            "cache_hit_price": "0.06",
+            "output_price": "0.60",
+            "release_date": "2025-06-11"
+          },
+          {
+            "company": "火山引擎",
+            "category": "LLM",
+            "model": "doubao-seed-1.6-lite",
+            "condition": "输入长度 [0, 32] 且输出长度 (0.2,+∞)",
+            "input_price": "0.30",
+            "cache_storage_price": "0.017",
+            "cache_hit_price": "0.06",
+            "output_price": "2.40",
+            "release_date": "2025-06-11"
+          },
+          {
+            "company": "火山引擎",
+            "category": "LLM",
+            "model": "doubao-seed-1.6-lite",
+            "condition": "输入长度 (32, 128]",
+            "input_price": "0.60",
+            "cache_storage_price": "0.017",
+            "cache_hit_price": "0.06",
+            "output_price": "4.00",
+            "release_date": "2025-06-11"
+          },
+          {
+            "company": "火山引擎",
+            "category": "LLM",
+            "model": "doubao-seed-1.6-lite",
+            "condition": "输入长度 (128, 256]",
+            "input_price": "1.20",
+            "cache_storage_price": "0.017",
+            "cache_hit_price": "0.06",
+            "output_price": "12.00",
+            "release_date": "2025-06-11"
+          },
+          {
+            "company": "火山引擎",
+            "category": "LLM",
+            "model": "doubao-seed-1.6-flash",
+            "condition": "输入长度 [0, 32]",
+            "input_price": "0.15",
+            "cache_storage_price": "0.017",
+            "cache_hit_price": "0.03",
+            "output_price": "1.50",
+            "release_date": "2025-06-11"
+          },
+          {
+            "company": "火山引擎",
+            "category": "LLM",
+            "model": "doubao-seed-1.6-flash",
+            "condition": "输入长度 (32, 128]",
+            "input_price": "0.30",
+            "cache_storage_price": "0.017",
+            "cache_hit_price": "0.03",
+            "output_price": "3.00",
+            "release_date": "2025-06-11"
+          },
+          {
+            "company": "火山引擎",
+            "category": "LLM",
+            "model": "doubao-seed-1.6-flash",
+            "condition": "输入长度 (128, 256]",
+            "input_price": "0.60",
+            "cache_storage_price": "0.017",
+            "cache_hit_price": "0.03",
+            "output_price": "6.00",
+            "release_date": "2025-06-11"
+          },
+          {
+            "company": "火山引擎",
+            "category": "LLM",
+            "model": "doubao-seed-1.6-vision",
+            "condition": "输入长度 [0, 32]",
+            "input_price": "0.80",
+            "cache_storage_price": "0.017",
+            "cache_hit_price": "0.16",
+            "output_price": "8.00",
+            "release_date": "2025-09-30"
+          },
+          {
+            "company": "火山引擎",
+            "category": "LLM",
+            "model": "doubao-seed-1.6-vision",
+            "condition": "输入长度 (32, 128]",
+            "input_price": "1.20",
+            "cache_storage_price": "0.017",
+            "cache_hit_price": "0.16",
+            "output_price": "16.00",
+            "release_date": "2025-09-30"
+          },
+          {
+            "company": "火山引擎",
+            "category": "LLM",
+            "model": "doubao-seed-1.6-vision",
+            "condition": "输入长度 (128, 256]",
+            "input_price": "2.40",
+            "cache_storage_price": "0.017",
+            "cache_hit_price": "0.16",
+            "output_price": "24.00",
+            "release_date": "2025-09-30"
+          },
+          {
+            "company": "火山引擎",
+            "category": "LLM",
+            "model": "doubao-seed-1.6-thinking",
+            "condition": "输入长度 [0, 32]",
+            "input_price": "0.80",
+            "cache_storage_price": "0.017",
+            "cache_hit_price": "0.16",
+            "output_price": "8.00",
+            "release_date": "2025-09-30"
+          },
+          {
+            "company": "火山引擎",
+            "category": "LLM",
+            "model": "doubao-seed-1.6-thinking",
+            "condition": "输入长度 (32, 128]",
+            "input_price": "1.20",
+            "cache_storage_price": "0.017",
+            "cache_hit_price": "0.16",
+            "output_price": "16.00",
+            "release_date": "2025-09-30"
+          },
+          {
+            "company": "火山引擎",
+            "category": "LLM",
+            "model": "doubao-seed-1.6-thinking",
+            "condition": "输入长度 (128, 256]",
+            "input_price": "2.40",
+            "cache_storage_price": "0.017",
+            "cache_hit_price": "0.16",
+            "output_price": "24.00",
+            "release_date": "2025-09-30"
+          },
+          {
+            "company": "火山引擎",
+            "category": "LLM",
+            "model": "doubao-seed-translation",
+            "condition": "-",
+            "input_price": "1.20",
+            "cache_storage_price": "不支持",
+            "cache_hit_price": "不支持",
+            "output_price": "3.60",
+            "release_date": "2025-06-11"
+          },
+          {
+            "company": "火山引擎",
+            "category": "LLM",
+            "model": "doubao-1.5-thinking-pro",
+            "condition": "-",
+            "input_price": "4.00",
+            "cache_storage_price": "不支持",
+            "cache_hit_price": "不支持",
+            "output_price": "16.00",
+            "release_date": "2025-01-22"
+          },
+          {
+            "company": "火山引擎",
+            "category": "LLM",
+            "model": "doubao-1.5-thinking-vision-pro",
+            "condition": "-",
+            "input_price": "3.00",
+            "cache_storage_price": "不支持",
+            "cache_hit_price": "不支持",
+            "output_price": "9.00",
+            "release_date": "2025-01-22"
+          },
+          {
+            "company": "火山引擎",
+            "category": "LLM",
+            "model": "doubao-1.5-pro-32k",
+            "condition": "-",
+            "input_price": "0.80",
+            "cache_storage_price": "0.017",
+            "cache_hit_price": "0.16",
+            "output_price": "2.00",
+            "release_date": "2025-01-22"
+          },
+          {
+            "company": "火山引擎",
+            "category": "LLM",
+            "model": "doubao-1.5-lite-32k",
+            "condition": "-",
+            "input_price": "0.30",
+            "cache_storage_price": "0.017",
+            "cache_hit_price": "0.06",
+            "output_price": "0.60",
+            "release_date": "2025-01-22"
+          },
+          {
+            "company": "火山引擎",
+            "category": "LLM",
+            "model": "doubao-1.5-vision-pro",
+            "condition": "-",
+            "input_price": "3.00",
+            "cache_storage_price": "不支持",
+            "cache_hit_price": "不支持",
+            "output_price": "9.00",
+            "release_date": "2025-01-22"
+          },
+          {
+            "company": "火山引擎",
+            "category": "LLM",
+            "model": "doubao-1.5-vision-lite",
+            "condition": "-",
+            "input_price": "1.50",
+            "cache_storage_price": "不支持",
+            "cache_hit_price": "不支持",
+            "output_price": "4.50",
+            "release_date": "2025-01-22"
+          },
+          {
+            "company": "火山引擎",
+            "category": "LLM",
+            "model": "doubao-1.5-ui-tars",
+            "condition": "-",
+            "input_price": "3.50",
+            "cache_storage_price": "不支持",
+            "cache_hit_price": "不支持",
+            "output_price": "12.00",
+            "release_date": "2025-01-22"
+          },
+          {
+            "company": "火山引擎",
+            "category": "LLM",
+            "model": "doubao-lite-32k",
+            "condition": "-",
+            "input_price": "0.30",
+            "cache_storage_price": "0.017",
+            "cache_hit_price": "0.06",
+            "output_price": "0.60",
+            "release_date": "2024-05-15"
+          },
+          {
+            "company": "火山引擎",
+            "category": "Video",
+            "model": "doubao-seedance-1.5-pro",
+            "condition": "480p, 16:9, 5s",
+            "input_price": "-",
+            "cache_storage_price": "-",
+            "cache_hit_price": "-",
+            "output_price": "0.80元/个",
+            "release_date": "2025-12-18"
+          },
+          {
+            "company": "火山引擎",
+            "category": "Video",
+            "model": "doubao-seedance-1.5-pro",
+            "condition": "720p, 16:9, 5s",
+            "input_price": "-",
+            "cache_storage_price": "-",
+            "cache_hit_price": "-",
+            "output_price": "1.73元/个",
+            "release_date": "2025-12-18"
+          },
+          {
+            "company": "火山引擎",
+            "category": "Video",
+            "model": "doubao-seedance-1.5-pro",
+            "condition": "1080p, 16:9, 5s",
+            "input_price": "-",
+            "cache_storage_price": "-",
+            "cache_hit_price": "-",
+            "output_price": "3.89元/个",
+            "release_date": "2025-12-18"
+          },
+          {
+            "company": "火山引擎",
+            "category": "Image",
+            "model": "doubao-seedream-4.5",
+            "condition": "-",
+            "input_price": "-",
+            "cache_storage_price": "-",
+            "cache_hit_price": "-",
+            "output_price": "0.25元/张",
+            "release_date": "2025-12-18"
+          },
+          {
+            "company": "火山引擎",
+            "category": "Image",
+            "model": "doubao-seedream-4.0",
+            "condition": "-",
+            "input_price": "-",
+            "cache_storage_price": "-",
+            "cache_hit_price": "-",
+            "output_price": "0.2元/张",
+            "release_date": "2025-06-11"
+          },
+          {
+            "company": "OpenAI",
+            "category": "LLM",
+            "model": "GPT-5.2",
+            "condition": "-",
+            "input_price": "$1.750",
+            "cache_storage_price": "-",
+            "cache_hit_price": "$0.175",
+            "output_price": "$14.000",
+            "release_date": "2025-12-10"
+          },
+          {
+            "company": "OpenAI",
+            "category": "LLM",
+            "model": "GPT-5.2 pro",
+            "condition": "-",
+            "input_price": "$21.00",
+            "cache_storage_price": "-",
+            "cache_hit_price": "-",
+            "output_price": "$168.00",
+            "release_date": "2025-12-10"
+          },
+          {
+            "company": "OpenAI",
+            "category": "LLM",
+            "model": "GPT-5 mini",
+            "condition": "-",
+            "input_price": "$0.250",
+            "cache_storage_price": "-",
+            "cache_hit_price": "$0.025",
+            "output_price": "$2.000",
+            "release_date": "2025-12-10"
+          },
+          {
+            "company": "OpenAI",
+            "category": "LLM",
+            "model": "GPT-4.1",
+            "condition": "-",
+            "input_price": "$3.00",
+            "cache_storage_price": "-",
+            "cache_hit_price": "$0.75",
+            "output_price": "$12.00",
+            "release_date": "2025-03-15"
+          },
+          {
+            "company": "OpenAI",
+            "category": "LLM",
+            "model": "GPT-4.1 mini",
+            "condition": "-",
+            "input_price": "$0.80",
+            "cache_storage_price": "-",
+            "cache_hit_price": "$0.20",
+            "output_price": "$3.20",
+            "release_date": "2025-03-15"
+          },
+          {
+            "company": "OpenAI",
+            "category": "LLM",
+            "model": "GPT-4.1 nano",
+            "condition": "-",
+            "input_price": "$0.20",
+            "cache_storage_price": "-",
+            "cache_hit_price": "$0.05",
+            "output_price": "$0.80",
+            "release_date": "2025-03-15"
+          },
+          {
+            "company": "OpenAI",
+            "category": "LLM",
+            "model": "o4-mini",
+            "condition": "-",
+            "input_price": "$4.00",
+            "cache_storage_price": "-",
+            "cache_hit_price": "$1.00",
+            "output_price": "$16.00",
+            "release_date": "2025-06-01"
+          },
+          {
+            "company": "OpenAI",
+            "category": "LLM",
+            "model": "GPT-4o",
+            "condition": "-",
+            "input_price": "$2.50",
+            "cache_storage_price": "-",
+            "cache_hit_price": "$1.25",
+            "output_price": "$10.00",
+            "release_date": "2024-05-13"
+          },
+          {
+            "company": "OpenAI",
+            "category": "LLM",
+            "model": "GPT-4o mini",
+            "condition": "-",
+            "input_price": "$0.15",
+            "cache_storage_price": "-",
+            "cache_hit_price": "$0.075",
+            "output_price": "$0.60",
+            "release_date": "2024-07-18"
+          },
+          {
+            "company": "OpenAI",
+            "category": "LLM",
+            "model": "o1",
+            "condition": "-",
+            "input_price": "$15.00",
+            "cache_storage_price": "-",
+            "cache_hit_price": "$7.50",
+            "output_price": "$60.00",
+            "release_date": "2024-09-12"
+          },
+          {
+            "company": "OpenAI",
+            "category": "LLM",
+            "model": "o1-mini",
+            "condition": "-",
+            "input_price": "$1.10",
+            "cache_storage_price": "-",
+            "cache_hit_price": "$0.55",
+            "output_price": "$4.40",
+            "release_date": "2024-09-12"
+          },
+          {
+            "company": "OpenAI",
+            "category": "Video",
+            "model": "sora-2",
+            "condition": "720x1280",
+            "input_price": "-",
+            "cache_storage_price": "-",
+            "cache_hit_price": "-",
+            "output_price": "$0.10/s",
+            "release_date": "2025-04-01"
+          },
+          {
+            "company": "OpenAI",
+            "category": "Video",
+            "model": "sora-2-pro",
+            "condition": "720x1280",
+            "input_price": "-",
+            "cache_storage_price": "-",
+            "cache_hit_price": "-",
+            "output_price": "$0.30/s",
+            "release_date": "2025-04-01"
+          },
+          {
+            "company": "OpenAI",
+            "category": "Video",
+            "model": "sora-2-pro",
+            "condition": "1024x1792",
+            "input_price": "-",
+            "cache_storage_price": "-",
+            "cache_hit_price": "-",
+            "output_price": "$0.50/s",
+            "release_date": "2025-04-01"
+          },
+          {
+            "company": "OpenAI",
+            "category": "Image",
+            "model": "GPT-image-1.5",
+            "condition": "-",
+            "input_price": "$5.00",
+            "cache_storage_price": "-",
+            "cache_hit_price": "$1.25",
+            "output_price": "$10.00",
+            "release_date": "2025-08-15"
+          },
+          {
+            "company": "OpenAI",
+            "category": "Image",
+            "model": "GPT-image-1",
+            "condition": "-",
+            "input_price": "$5.00",
+            "cache_storage_price": "-",
+            "cache_hit_price": "$1.25",
+            "output_price": "-",
+            "release_date": "2024-11-06"
+          },
+          {
+            "company": "OpenAI",
+            "category": "Image",
+            "model": "GPT-image-1-mini",
+            "condition": "-",
+            "input_price": "$2.00",
+            "cache_storage_price": "-",
+            "cache_hit_price": "$0.20",
+            "output_price": "-",
+            "release_date": "2024-11-06"
+          },
+          {
+            "company": "OpenAI",
+            "category": "Image",
+            "model": "DALL-E 3",
+            "condition": "1024x1024 Standard",
+            "input_price": "-",
+            "cache_storage_price": "-",
+            "cache_hit_price": "-",
+            "output_price": "$0.040/张",
+            "release_date": "2023-11-06"
+          },
+          {
+            "company": "OpenAI",
+            "category": "Image",
+            "model": "DALL-E 3",
+            "condition": "1024x1024 HD",
+            "input_price": "-",
+            "cache_storage_price": "-",
+            "cache_hit_price": "-",
+            "output_price": "$0.080/张",
+            "release_date": "2023-11-06"
+          },
+          {
+            "company": "Google",
+            "category": "LLM",
+            "model": "Gemini 1.5 Pro",
+            "condition": "输入长度 ≤ 128k",
+            "input_price": "$3.50",
+            "cache_storage_price": "$4.50/hr",
+            "cache_hit_price": "$0.875",
+            "output_price": "$10.50",
+            "release_date": "2024-02-15"
+          },
+          {
+            "company": "Google",
+            "category": "LLM",
+            "model": "Gemini 1.5 Pro",
+            "condition": "输入长度 > 128k",
+            "input_price": "$7.00",
+            "cache_storage_price": "$4.50/hr",
+            "cache_hit_price": "$1.75",
+            "output_price": "$21.00",
+            "release_date": "2024-02-15"
+          },
+          {
+            "company": "Google",
+            "category": "LLM",
+            "model": "Gemini 1.5 Flash",
+            "condition": "输入长度 ≤ 128k",
+            "input_price": "$0.075",
+            "cache_storage_price": "$1.00/hr",
+            "cache_hit_price": "$0.01875",
+            "output_price": "$0.30",
+            "release_date": "2024-05-14"
+          },
+          {
+            "company": "Google",
+            "category": "LLM",
+            "model": "Gemini 1.5 Flash",
+            "condition": "输入长度 > 128k",
+            "input_price": "$0.15",
+            "cache_storage_price": "$1.00/hr",
+            "cache_hit_price": "$0.0375",
+            "output_price": "$0.60",
+            "release_date": "2024-05-14"
+          },
+          {
+            "company": "Google",
+            "category": "LLM",
+            "model": "Gemini 1.0 Pro",
+            "condition": "-",
+            "input_price": "$0.50",
+            "cache_storage_price": "-",
+            "cache_hit_price": "-",
+            "output_price": "$1.50",
+            "release_date": "2023-12-06"
+          },
+          {
+            "company": "Google",
+            "category": "LLM",
+            "model": "Gemini 2.0 Flash",
+            "condition": "Preview Tier",
+            "input_price": "Free",
+            "cache_storage_price": "-",
+            "cache_hit_price": "-",
+            "output_price": "Free",
+            "release_date": "2024-12-11"
+          },
+          {
+            "company": "Google",
+            "category": "LLM",
+            "model": "Gemini 2.5 Flash",
+            "condition": "Free App Tier",
+            "input_price": "Free",
+            "cache_storage_price": "-",
+            "cache_hit_price": "-",
+            "output_price": "Free",
+            "release_date": "2025-07-26"
+          },
+          {
+            "company": "Google",
+            "category": "LLM",
+            "model": "Gemini 2.5 Pro",
+            "condition": "Google AI Pro ($19.99/mo)",
+            "input_price": "-",
+            "cache_storage_price": "-",
+            "cache_hit_price": "-",
+            "output_price": "$19.99/mo",
+            "release_date": "2025-07-26"
+          },
+          {
+            "company": "Google",
+            "category": "LLM",
+            "model": "Gemini 3.0 Ultra",
+            "condition": "Ultra Tier ($249.99/mo)",
+            "input_price": "-",
+            "cache_storage_price": "-",
+            "cache_hit_price": "-",
+            "output_price": "$249.99/mo",
+            "release_date": "2025-10-22"
+          },
+          {
+            "company": "Anthropic",
+            "category": "LLM",
+            "model": "Claude 3.5 Sonnet",
+            "condition": "-",
+            "input_price": "$3.00",
+            "cache_storage_price": "$3.75",
+            "cache_hit_price": "$0.30",
+            "output_price": "$15.00",
+            "release_date": "2024-06-20"
+          },
+          {
+            "company": "Anthropic",
+            "category": "LLM",
+            "model": "Claude 3.5 Haiku",
+            "condition": "-",
+            "input_price": "$1.00",
+            "cache_storage_price": "$1.25",
+            "cache_hit_price": "$0.10",
+            "output_price": "$5.00",
+            "release_date": "2024-11-04"
+          },
+          {
+            "company": "Anthropic",
+            "category": "LLM",
+            "model": "Claude 3 Opus",
+            "condition": "-",
+            "input_price": "$15.00",
+            "cache_storage_price": "$18.75",
+            "cache_hit_price": "$1.50",
+            "output_price": "$75.00",
+            "release_date": "2024-03-04"
+          },
+          {
+            "company": "Anthropic",
+            "category": "LLM",
+            "model": "Claude 3 Haiku",
+            "condition": "-",
+            "input_price": "$0.25",
+            "cache_storage_price": "$0.30",
+            "cache_hit_price": "$0.03",
+            "output_price": "$1.25",
+            "release_date": "2024-03-13"
+          },
+          {
+            "company": "阿里巴巴",
+            "category": "LLM",
+            "model": "通义千问Max",
+            "condition": "中国内地",
+            "input_price": "3.2",
+            "cache_storage_price": "-",
+            "cache_hit_price": "-",
+            "output_price": "12.8",
+            "release_date": "2023-07-11"
+          },
+          {
+            "company": "阿里巴巴",
+            "category": "LLM",
+            "model": "通义千问Plus",
+            "condition": "中国内地",
+            "input_price": "0.8",
+            "cache_storage_price": "-",
+            "cache_hit_price": "-",
+            "output_price": "2.0",
+            "release_date": "2023-07-11"
+          },
+          {
+            "company": "阿里巴巴",
+            "category": "LLM",
+            "model": "通义千问Flash",
+            "condition": "中国内地",
+            "input_price": "0.15",
+            "cache_storage_price": "-",
+            "cache_hit_price": "-",
+            "output_price": "1.5",
+            "release_date": "2023-07-11"
+          },
+          {
+            "company": "阿里巴巴",
+            "category": "LLM",
+            "model": "通义千问Coder",
+            "condition": "中国内地",
+            "input_price": "1.0",
+            "cache_storage_price": "-",
+            "cache_hit_price": "-",
+            "output_price": "4.0",
+            "release_date": "2023-07-11"
+          },
+          {
+            "company": "阿里巴巴",
+            "category": "LLM",
+            "model": "qwen3-max",
+            "condition": "0<Tokens≤32K",
+            "input_price": "2.5",
+            "cache_storage_price": "-",
+            "cache_hit_price": "-",
+            "output_price": "10.0",
+            "release_date": "2025-09-23"
+          },
+          {
+            "company": "阿里巴巴",
+            "category": "LLM",
+            "model": "qwen3-max",
+            "condition": "32K<Tokens≤128K",
+            "input_price": "4.0",
+            "cache_storage_price": "-",
+            "cache_hit_price": "-",
+            "output_price": "16.0",
+            "release_date": "2025-09-23"
+          },
+          {
+            "company": "阿里巴巴",
+            "category": "LLM",
+            "model": "qwen3-max",
+            "condition": "128K<Tokens≤252K",
+            "input_price": "7.0",
+            "cache_storage_price": "-",
+            "cache_hit_price": "-",
+            "output_price": "28.0",
+            "release_date": "2025-09-23"
+          },
+          {
+            "company": "阿里巴巴",
+            "category": "LLM",
+            "model": "qwen3-max-2026-01-23",
+            "condition": "0<Tokens≤32K",
+            "input_price": "2.5",
+            "cache_storage_price": "-",
+            "cache_hit_price": "-",
+            "output_price": "10.0",
+            "release_date": "2026-01-23"
+          },
+          {
+            "company": "阿里巴巴",
+            "category": "LLM",
+            "model": "qwen3-max-2026-01-23",
+            "condition": "32K<Tokens≤128K",
+            "input_price": "4.0",
+            "cache_storage_price": "-",
+            "cache_hit_price": "-",
+            "output_price": "16.0",
+            "release_date": "2026-01-23"
+          },
+          {
+            "company": "阿里巴巴",
+            "category": "LLM",
+            "model": "qwen3-max-2026-01-23",
+            "condition": "128K<Tokens≤252K",
+            "input_price": "7.0",
+            "cache_storage_price": "-",
+            "cache_hit_price": "-",
+            "output_price": "28.0",
+            "release_date": "2026-01-23"
+          },
+          {
+            "company": "阿里巴巴",
+            "category": "LLM",
+            "model": "qwen3-max-2025-09-23",
+            "condition": "0<Tokens≤32K",
+            "input_price": "6.0",
+            "cache_storage_price": "-",
+            "cache_hit_price": "-",
+            "output_price": "24.0",
+            "release_date": "2025-09-23"
+          },
+          {
+            "company": "阿里巴巴",
+            "category": "LLM",
+            "model": "qwen3-max-2025-09-23",
+            "condition": "32K<Tokens≤128K",
+            "input_price": "10.0",
+            "cache_storage_price": "-",
+            "cache_hit_price": "-",
+            "output_price": "40.0",
+            "release_date": "2025-09-23"
+          },
+          {
+            "company": "阿里巴巴",
+            "category": "LLM",
+            "model": "qwen3-max-2025-09-23",
+            "condition": "128K<Tokens≤252K",
+            "input_price": "15.0",
+            "cache_storage_price": "-",
+            "cache_hit_price": "-",
+            "output_price": "60.0",
+            "release_date": "2025-09-23"
+          },
+          {
+            "company": "阿里巴巴",
+            "category": "LLM",
+            "model": "qwen3-max-preview",
+            "condition": "0<Tokens≤32K",
+            "input_price": "6.0",
+            "cache_storage_price": "-",
+            "cache_hit_price": "-",
+            "output_price": "24.0",
+            "release_date": "2025-09-23"
+          },
+          {
+            "company": "阿里巴巴",
+            "category": "LLM",
+            "model": "qwen3-max-preview",
+            "condition": "32K<Tokens≤128K",
+            "input_price": "10.0",
+            "cache_storage_price": "-",
+            "cache_hit_price": "-",
+            "output_price": "40.0",
+            "release_date": "2025-09-23"
+          },
+          {
+            "company": "阿里巴巴",
+            "category": "LLM",
+            "model": "qwen3-max-preview",
+            "condition": "128K<Tokens≤252K",
+            "input_price": "15.0",
+            "cache_storage_price": "-",
+            "cache_hit_price": "-",
+            "output_price": "60.0",
+            "release_date": "2025-09-23"
+          },
+          {
+            "company": "阿里巴巴",
+            "category": "LLM",
+            "model": "qwen-plus",
+            "condition": "中国内地",
+            "input_price": "0.8",
+            "cache_storage_price": "-",
+            "cache_hit_price": "-",
+            "output_price": "2.0",
+            "release_date": "2023-09-12"
+          },
+          {
+            "company": "阿里巴巴",
+            "category": "LLM",
+            "model": "qwen-turbo",
+            "condition": "中国内地",
+            "input_price": "0.3",
+            "cache_storage_price": "-",
+            "cache_hit_price": "-",
+            "output_price": "0.6",
+            "release_date": "2023-07-11"
+          }
+        ];
+
+        const llmBody = document.getElementById('llmBody');
+        const videoBody = document.getElementById('videoBody');
+        const imageBody = document.getElementById('imageBody');
+
+        const parsePriceToUsd = (priceStr) => {
+            if (!priceStr || priceStr === '-' || priceStr === '不支持' || priceStr === 'Free') return 0;
+            let cleanStr = priceStr.replace(/[^\d\.\$¥]/g, ''); 
+            let val = parseFloat(cleanStr.replace(/[\$¥]/g, ''));
+            if (isNaN(val)) return 0;
+
+            if (priceStr.includes('$') || priceStr.includes('US$')) {
+                return val;
+            } else {
+                return val / EXCHANGE_RATE;
+            }
+        };
+
+        const formatPrice = (val, company) => {
+            if (!val || val === '-' || val === '不支持') return val;
+            if (val === 'Free') return 'Free';
+            if (val.startsWith('$') || val.startsWith('¥') || val.startsWith('US$')) return val;
+            return company === '火山引擎' ? '¥' + val : val;
+        };
+
+        // Pre-calculate max prices for bars
+        let maxLlmPrice = 0;
+        let maxVideoPrice = 0;
+        let maxImagePrice = 0;
+
+        rawData.forEach(item => {
+            if (item.company === '火山引擎' && !item.model.toLowerCase().includes('doubao')) return;
+
+            let usdVal = parsePriceToUsd(item.output_price);
+            if (item.category === 'LLM') {
+                if (usdVal > maxLlmPrice) maxLlmPrice = usdVal;
+            } else if (item.category === 'Video') {
+                if (usdVal > maxVideoPrice) maxVideoPrice = usdVal;
+            } else if (item.category === 'Image') {
+                 if (usdVal > maxImagePrice) maxImagePrice = usdVal;
+            }
+        });
+
+        const createRow = (item, type) => {
+            if (item.company === '火山引擎' && !item.model.toLowerCase().includes('doubao')) {
+                return null;
+            }
+
+            const tr = document.createElement('tr');
+            let companyClass = '';
+            if (item.company === '火山引擎') companyClass = 'company-volcengine';
+            else if (item.company === 'OpenAI') companyClass = 'company-openai';
+            else if (item.company === 'Google') companyClass = 'company-google';
+            else if (item.company === 'Anthropic') companyClass = 'company-anthropic';
+            else if (item.company === '阿里巴巴') companyClass = 'company-alibaba';
+            
+            let barClass = '';
+            if (item.company === 'OpenAI') barClass = 'bar-openai';
+            else if (item.company === 'Google') barClass = 'bar-google';
+            else if (item.company === 'Anthropic') barClass = 'bar-anthropic';
+            else if (item.company === '阿里巴巴') barClass = 'bar-alibaba';
+            
+            tr.setAttribute('data-company', item.company);
+            
+            let usdPrice = parsePriceToUsd(item.output_price);
+            let maxPrice = 1;
+            if (type === 'LLM') maxPrice = maxLlmPrice;
+            else if (type === 'Video') maxPrice = maxVideoPrice;
+            else if (type === 'Image') maxPrice = maxImagePrice;
+            
+            let percent = maxPrice > 0 ? (usdPrice / maxPrice) * 100 : 0;
+            if (percent > 100) percent = 100;
+            
+            const visCell = `
+                <div class="bar-container">
+                    <div class="bar-wrapper">
+                        <div class="bar ${barClass}" style="width: ${percent}%"></div>
+                    </div>
+                    <div class="usd-price">$${usdPrice.toFixed(3)}</div>
+                </div>
+            `;
+
+            if (type === 'LLM') {
+                const isCacheSupported = item.cache_hit_price !== '不支持' && item.cache_hit_price !== '-';
+                const inputPrice = formatPrice(item.input_price, item.company);
+                const cachePrice = formatPrice(item.cache_hit_price, item.company);
+                const outputPrice = formatPrice(item.output_price, item.company);
+                
+                let cacheBadgeClass = '';
+                if (item.company === 'OpenAI') cacheBadgeClass = 'badge-openai';
+                else if (item.company === 'Google') cacheBadgeClass = 'badge-google';
+                else if (item.company === 'Anthropic') cacheBadgeClass = 'badge-anthropic';
+                else if (item.company === '阿里巴巴') cacheBadgeClass = 'badge-alibaba';
+
+                tr.innerHTML = `
+                    <td class="company-cell ${companyClass}">${item.company}</td>
+                    <td class="model-name">${item.model}</td>
+                    <td class="date-cell">${item.release_date || '-'}</td>
+                    <td class="condition-cell">${item.condition.replace(/​/g, '')}</td>
+                    <td class="price-cell">${inputPrice.replace(/​/g, '')}</td>
+                    <td class="price-cell">
+                        ${isCacheSupported ? 
+                            `<span class="badge ${cacheBadgeClass}">${cachePrice.replace(/​/g, '')}</span>` : 
+                            `<span class="badge badge-na">不支持</span>`}
+                    </td>
+                    <td class="price-cell">${outputPrice.replace(/​/g, '')}</td>
+                    <td class="vis-cell">${visCell}</td>
+                    <td class="date-cell">${item.fetched_date || '2026-01-31'}</td>
+                `;
+            } else {
+                const price = formatPrice(item.output_price, item.company);
+                tr.innerHTML = `
+                    <td class="company-cell ${companyClass}">${item.company}</td>
+                    <td class="model-name">${item.model}</td>
+                    <td class="date-cell">${item.release_date || '-'}</td>
+                    <td class="condition-cell">${item.condition.replace(/​/g, '')}</td>
+                    <td class="price-cell">${price.replace(/​/g, '')}</td>
+                    <td class="vis-cell">${visCell}</td>
+                    <td class="date-cell">${item.fetched_date || '2026-01-31'}</td>
+                `;
+            }
+            return tr;
+        };
+
+        const companyOrder = { '火山引擎': 1, 'OpenAI': 2, 'Google': 3, 'Anthropic': 4, '阿里巴巴': 5 };
+        rawData.sort((a, b) => {
+            const orderA = companyOrder[a.company] || 99;
+            const orderB = companyOrder[b.company] || 99;
+            if (orderA !== orderB) return orderA - orderB;
+            
+            const dateA = new Date(a.release_date || '2000-01-01');
+            const dateB = new Date(b.release_date || '2000-01-01');
+            return dateB - dateA;
+        });
+
+        rawData.forEach(item => {
+            let row = null;
+            if (item.category === 'LLM') {
+                row = createRow(item, 'LLM');
+                if (row) llmBody.appendChild(row);
+            } else if (item.category === 'Video') {
+                row = createRow(item, 'Video');
+                if (row) videoBody.appendChild(row);
+            } else if (item.category === 'Image') {
+                row = createRow(item, 'Image');
+                if (row) imageBody.appendChild(row);
+            }
+        });
+
+        // --- SCATTER CHART ---
+        const modelMap = new Map();
+
+        rawData.forEach(item => {
+            if (item.category !== 'LLM') return;
+            if (item.company === '火山引擎' && !item.model.toLowerCase().includes('doubao')) return;
+            let price = parsePriceToUsd(item.output_price);
+            if (item.output_price && item.output_price.includes('/mo')) return;
+            
+            const key = item.company + '|' + item.model;
+            
+            if (!modelMap.has(key)) {
+                modelMap.set(key, {
+                    model: item.model,
+                    company: item.company,
+                    date: item.release_date || '2020-01-01',
+                    price: price
+                });
+            } else {
+                const existing = modelMap.get(key);
+                if (price < existing.price) {
+                    existing.price = price;
+                }
+            }
+        });
+
+        const chartData = Array.from(modelMap.values());
+        
+        const colorMap = {
+            '火山引擎': '#1664ff',
+            'OpenAI': '#10a37f',
+            'Google': '#4285F4',
+            'Anthropic': '#d97757',
+            '阿里巴巴': '#ff6a00'
+        };
+
+        const chartDom = document.getElementById('priceScatterChart');
+        const myChart = echarts.init(chartDom);
+        window.myChart = myChart; // Expose globally for resize
+
+        const seriesData = ['火山引擎', 'OpenAI', 'Google', 'Anthropic', '阿里巴巴'].map(company => {
+            const data = chartData
+                .filter(d => d.company === company)
+                .map(d => {
+                    return {
+                        name: d.model,
+                        value: [
+                            d.date,
+                            d.price,
+                            d.model
+                        ],
+                        itemStyle: { color: colorMap[company] }
+                    };
+                });
+            
+            return {
+                name: company,
+                type: 'scatter',
+                symbolSize: 12,
+                data: data,
+                emphasis: {
+                    focus: 'series',
+                    label: {
+                        show: true,
+                        formatter: function(param) {
+                            return param.data.name;
+                        },
+                        position: 'top'
+                    }
+                }
+            };
+        });
+
+        const option = {
+            title: {
+                text: 'LLM 模型价格分布趋势图',
+                subtext: '支持鼠标滚轮缩放 / 拖拽平移 / 点击右上角保存图片',
+                left: 'center'
+            },
+            toolbox: {
+                feature: {
+                    saveAsImage: {
+                        title: '保存为图片',
+                        pixelRatio: 2
+                    },
+                    dataZoom: {
+                        title: {
+                            zoom: '区域缩放',
+                            back: '还原'
+                        }
+                    },
+                    restore: {
+                        title: '重置'
+                    }
+                },
+                right: 30
+            },
+            grid: {
+                left: '3%',
+                right: '7%',
+                bottom: '10%',
+                containLabel: true
+            },
+            tooltip: {
+                trigger: 'item',
+                formatter: function (params) {
+                    return `
+                        <div style="font-weight:bold; margin-bottom:5px;">${params.data.name}</div>
+                        <div>公司: ${params.seriesName}</div>
+                        <div>发布日期: ${params.data.value[0]}</div>
+                        <div>输出价格: <span style="color:red; font-weight:bold">$${params.data.value[1]}</span></div>
+                    `;
+                },
+                axisPointer: {
+                    type: 'cross'
+                }
+            },
+            legend: {
+                data: ['火山引擎', 'OpenAI', 'Google', 'Anthropic', '阿里巴巴'],
+                bottom: 10
+            },
+            xAxis: {
+                type: 'time',
+                name: '发布日期',
+                nameLocation: 'middle',
+                nameGap: 30,
+                splitLine: { show: true }
+            },
+            yAxis: {
+                type: 'value',
+                name: '输出价格 (USD)',
+                splitLine: { show: true },
+                axisLabel: { formatter: '${value}' }
+            },
+            dataZoom: [
+                { type: 'slider', show: true, xAxisIndex: [0], start: 0, end: 100, bottom: 40 },
+                { type: 'inside', xAxisIndex: [0], start: 0, end: 100 },
+                { type: 'slider', show: true, yAxisIndex: [0], left: '93%', start: 0, end: 100 },
+                { type: 'inside', yAxisIndex: [0], start: 0, end: 100 }
+            ],
+            series: seriesData
+        };
+
+        myChart.setOption(option);
+
+        window.addEventListener('resize', function() {
+            myChart.resize();
+        });
+    </script>
+</body>
+</html>
