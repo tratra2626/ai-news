@@ -1,0 +1,272 @@
+[
+  {
+    "title": "4 分钟前\n.\nAIbase\n微信严厉打击AI仿冒名人：千余账号被处分，多人遭永久封禁\n微信平台近日严厉打击利用AI技术仿冒名人的违规账号，以维护网络生态和保护公众人物权益。这些账号通过AI换脸、拟声技术伪造名人形象和声音，制作虚假内容用于违规引流。",
+    "link": "https://www.aibase.com/zh/news/25869",
+    "source": "AIBase",
+    "date": "2026-03-03",
+    "status": "pending",
+    "summary": "",
+    "takeaway": ""
+  },
+  {
+    "title": "30 分钟前\n.\nAIbase\nAI 手机进入“自进化”时代！荣耀 Magic8 系列发布：MagicOS 10 携 L3 级 YOYO 智能体降临，开启 Robot Phone 序章\n荣耀发布Magic8系列手机及MagicOS 10系统，标志其向AI终端生态公司转型。该系列以“自进化”为核心，旨在突破AI手机同质化竞争，抢占2025年市场爆发先机。",
+    "link": "https://www.aibase.com/zh/news/25868",
+    "source": "AIBase",
+    "date": "2026-03-03",
+    "status": "pending",
+    "summary": "",
+    "takeaway": ""
+  },
+  {
+    "title": "35 分钟前\n.\nAIbase\n小米三代人形机器人已登记著作权\n小米人形机器人已实现汽车工厂3小时自主作业，并登记了第三代机器人CyberOne美术著作权，同时拥有多项仿生机器人软件平台著作权。",
+    "link": "https://www.aibase.com/zh/news/25867",
+    "source": "AIBase",
+    "date": "2026-03-03",
+    "status": "pending",
+    "summary": "",
+    "takeaway": ""
+  },
+  {
+    "title": "36 分钟前\n.\nAIbase\n肯德基联手阿里千问大模型上线AI点餐助手“小K”，支持全流程语音闭环\n肯德基推出AI点餐助手“小K”，基于阿里通义千问大模型，结合RAG技术，实现自然语言理解和多轮对话。用户可直接输入需求，如“10人开会、预算350元”，系统将智能推荐套餐，简化点餐流程，提升体验。",
+    "link": "https://www.aibase.com/zh/news/25866",
+    "source": "AIBase",
+    "date": "2026-03-03",
+    "status": "pending",
+    "summary": "",
+    "takeaway": ""
+  },
+  {
+    "title": "41 分钟前\n.\nAIbase\n中国AI崛起：全球调用量首次超越美国，投资机会引关注！\n中国AI产业崛起，全球调用量首超美国。OpenRouter数据显示，2026年2月中国AI大模型周调用量超越美国，标志应用落地取得突破。",
+    "link": "https://www.aibase.com/zh/news/25865",
+    "source": "AIBase",
+    "date": "2026-03-03",
+    "status": "pending",
+    "summary": "",
+    "takeaway": ""
+  },
+  {
+    "title": "42 分钟前\n.\nAIbase\nChatGPT美国卸载量暴增295%，Anthropic拒绝国防部合作后登顶App Store\n2026年2月28日，因OpenAI与美国国防部合作消息引发争议，ChatGPT移动应用在美国市场遭遇大规模用户抵制。当日卸载量环比激增295%，App Store一星评价飙升775%，五星好评减少50%，反映出用户对AI技术军事化的强烈不满。",
+    "link": "https://www.aibase.com/zh/news/25864",
+    "source": "AIBase",
+    "date": "2026-03-03",
+    "status": "pending",
+    "summary": "",
+    "takeaway": ""
+  },
+  {
+    "title": "49 分钟前\n.\nAIbase\nGPT-5.4 意外“炸场”！GitHub 源码泄露 OpenAI 王牌：200 万超长上下文+状态化 AI，彻底终结“金鱼记忆”时代？\nOpenAI工程师意外在代码仓库中泄露了尚未发布的“gpt-5.4”型号信息，引发技术圈震动。尽管公司迅速修正为“gpt-5.3-codex”，但多方认为这并非简单失误，暗示大模型领域可能迎来重大更新。",
+    "link": "https://www.aibase.com/zh/news/25863",
+    "source": "AIBase",
+    "date": "2026-03-03",
+    "status": "pending",
+    "summary": "",
+    "takeaway": ""
+  },
+  {
+    "title": "55 分钟前\n.\nAIbase\n沟通无界！讯飞 AI 眼镜 MWC 2026 首秀：40 克极致轻量，唇动识别黑科技助你高噪环境“降维翻译”\n科大讯飞在MWC2026上推出“讯飞AI眼镜”，专为面对面交流设计，通过多模态技术解决传统翻译设备在复杂环境下“听不清、译不准”的问题，实现所见即所得的翻译效果，让沟通更自然。",
+    "link": "https://www.aibase.com/zh/news/25862",
+    "source": "AIBase",
+    "date": "2026-03-03",
+    "status": "pending",
+    "summary": "",
+    "takeaway": ""
+  },
+  {
+    "title": "56 分钟前\n.\nAIbase\n阿里通义千问开源 Qwen3.5小型模型系列：边缘设备也能跑多模态Agent\n阿里通义千问团队推出Qwen3.5小型模型系列，包括0.8B、2B、4B、9B四款轻量级模型及对应基础版本。它们基于统一架构，具备原生多模态能力（支持图像-文本处理），结构改进且强化学习训练可扩展，能以更少计算资源实现更高智能水平。其中0.8B和2B模型极致小巧、推理极快，专为边缘设备优化。",
+    "link": "https://www.aibase.com/zh/news/25861",
+    "source": "AIBase",
+    "date": "2026-03-03",
+    "status": "pending",
+    "summary": "",
+    "takeaway": ""
+  },
+  {
+    "title": "57 分钟前\n.\nAIbase\n科大讯飞 AI 眼镜 MWC 2026 首秀： 40 克机身实现多模态实时翻译\n科大讯飞在MWC 2026发布AI眼镜，主打轻量化与多模态交互。其核心功能是实时跨语言翻译，通过镜片显示字幕并配合扬声器播放，实现“所见即所得”的面对面沟通体验。",
+    "link": "https://www.aibase.com/zh/news/25860",
+    "source": "AIBase",
+    "date": "2026-03-03",
+    "status": "pending",
+    "summary": "",
+    "takeaway": ""
+  },
+  {
+    "title": "59 分钟前\n.\nAIbase\nClaude 全球宕机 2 小时：川普指责 Anthropic“太觉醒”，军方却边禁边用它轰炸伊朗\nAnthropic公司旗下AI助手Claude在2026年3月2日发生大规模服务中断，持续约2小时。宕机正值公司面临与白宫的博弈，且外界评价其性能可能超越ChatGPT之际。官方解释事故由空前需求引发，突显其在快速发展中遭遇的运营挑战。",
+    "link": "https://www.aibase.com/zh/news/25859",
+    "source": "AIBase",
+    "date": "2026-03-03",
+    "status": "pending",
+    "summary": "",
+    "takeaway": ""
+  },
+  {
+    "title": "1 小时前\n.\nAIbase\nDeepSeek 大模型 V4 即将上线，AI 应用迎来新机遇！\nDeepSeek 下周将推出 V4 大模型，新增支持图片、视频和文本生成功能。这是自 2025 年 1 月 R1 模型后的首次重大升级，进一步布局国内低成本开源市场。财信证券分析师认为，AI 应用商业化进程有望加速，尤其在春节期间，互联网厂商正借助高频消费场景推动技术落地。",
+    "link": "https://www.aibase.com/zh/news/25858",
+    "source": "AIBase",
+    "date": "2026-03-03",
+    "status": "pending",
+    "summary": "",
+    "takeaway": ""
+  },
+  {
+    "title": "1 小时前\n.\nAIbase\n安卓隐私应用Nearby Glasses发布：可实时检测附近Meta与Snap智能眼镜监控\nNearby Glasses是一款Android应用，通过蓝牙扫描监测附近可能正在录像的智能眼镜，如Meta Ray-Ban等，旨在防范因设备外观隐蔽导致的隐私泄露风险。",
+    "link": "https://www.aibase.com/zh/news/25857",
+    "source": "AIBase",
+    "date": "2026-03-03",
+    "status": "pending",
+    "summary": "",
+    "takeaway": ""
+  },
+  {
+    "title": "1 小时前\n.\nAIbase\nGoogle NotebookLM 信息图自定义样式功能正式上线\n谷歌AI笔记工具NotebookLM推出信息图自定义样式功能，提供10种预设风格和完全自定义选项，用户可灵活调整视觉呈现，提升创作体验。",
+    "link": "https://www.aibase.com/zh/news/25856",
+    "source": "AIBase",
+    "date": "2026-03-03",
+    "status": "pending",
+    "summary": "",
+    "takeaway": ""
+  },
+  {
+    "title": "1 小时前\n.\nAIbase\n马斯克打响广告“挽回战”：X 宣称 Grok 助其品牌安全得分近 100%，“深度伪造”风波后硬刚屏蔽工具\n马斯克的X平台正用AI重塑安全形象，以挽回广告商。内部文件显示，平台向广告商强调，在Grok AI的加持下，X已变得“无比安全”。此举被视为应对2026年初AI深伪丑闻的公关自救，核心卖点是Grok审核下的“完美得分”。",
+    "link": "https://www.aibase.com/zh/news/25855",
+    "source": "AIBase",
+    "date": "2026-03-03",
+    "status": "pending",
+    "summary": "",
+    "takeaway": ""
+  },
+  {
+    "title": "1 小时前\n.\nAIbase\n​小而强、轻而快！通义千问 Qwen3.5 推出多款小尺寸模型，适配消费级显卡\n阿里通义实验室推出Qwen3.5系列小尺寸模型，包括0.8B、2B、4B和9B四种参数规模。这些模型基于统一基座研发，主打轻量级和高适应性，旨在降低AI应用门槛，实现从端侧设备到垂直场景的低成本高效落地。",
+    "link": "https://www.aibase.com/zh/news/25854",
+    "source": "AIBase",
+    "date": "2026-03-03",
+    "status": "pending",
+    "summary": "",
+    "takeaway": ""
+  },
+  {
+    "title": "1 小时前\n.\nAIbase\n判了！美国最高法院拒绝受理AI版权案，纯AI生成作品正式被挡在门外\n美国最高法院拒绝受理AI版权上诉，维持原判，确认纯AI生成作品无法获得版权保护，焦点人物为计算机科学家斯蒂芬·萨勒。",
+    "link": "https://www.aibase.com/zh/news/25853",
+    "source": "AIBase",
+    "date": "2026-03-03",
+    "status": "pending",
+    "summary": "",
+    "takeaway": ""
+  },
+  {
+    "title": "1 小时前\n.\nAIbase\nMiniMax App 全球上线 MaxClaw，开启全新付费体验！\nMiniMax 于 3 月 3 日全球上线移动应用 MaxClaw，用户可通过 iOS 和安卓版 MiniMax App 体验。该应用不仅方便用户使用 OpenClaw，还引入了新的 Coding Plan 计费方式，为用户提供 Agent 积分之外的付费选择。",
+    "link": "https://www.aibase.com/zh/news/25852",
+    "source": "AIBase",
+    "date": "2026-03-03",
+    "status": "pending",
+    "summary": "",
+    "takeaway": ""
+  },
+  {
+    "title": "1 小时前\n.\nAIbase\n美政府多家核心机构弃用Anthropic，转向OpenAI\n美国多个核心部门停用Anthropic旗下AI产品，转而采用OpenAI的GPT-4.1模型，国务院内部聊天机器人系统已完成切换。此举使OpenAI成为技术更迭中的主要受益方。",
+    "link": "https://www.aibase.com/zh/news/25851",
+    "source": "AIBase",
+    "date": "2026-03-03",
+    "status": "pending",
+    "summary": "",
+    "takeaway": ""
+  },
+  {
+    "title": "1 小时前\n.\nAIbase\n​用户量激增致“宕机”：Claude官网一度下线，Anthropic直呼需求空前\n全球AI巨头Anthropic旗下聊天机器人Claude突发服务中断，官方网站及移动应用均受影响，大量用户遭遇连接失败。监测数据显示，故障峰值出现在纽约清晨，近2000名用户集中报告异常。",
+    "link": "https://www.aibase.com/zh/news/25850",
+    "source": "AIBase",
+    "date": "2026-03-03",
+    "status": "pending",
+    "summary": "",
+    "takeaway": ""
+  },
+  {
+    "title": "未来的相机只有 AI，没有镜头",
+    "link": "https://www.ifanr.com/app/1550223",
+    "source": "APPSO",
+    "date": "2026-03-03",
+    "status": "pending",
+    "summary": "",
+    "takeaway": ""
+  },
+  {
+    "title": "从微软到 Google，人人都想消灭密码",
+    "link": "https://www.ifanr.com/app/1546279",
+    "source": "APPSO",
+    "date": "2026-03-03",
+    "status": "pending",
+    "summary": "",
+    "takeaway": ""
+  },
+  {
+    "title": "Google 内部文件泄漏：我们和 OpenAI 都没护城河，开源可以打败 ChatGPT",
+    "link": "https://www.ifanr.com/app/1546210",
+    "source": "APPSO",
+    "date": "2026-03-03",
+    "status": "pending",
+    "summary": "",
+    "takeaway": ""
+  },
+  {
+    "title": "WPS AI 来了，比 ChatGPT 更适合办公，还更懂中文",
+    "link": "https://www.ifanr.com/app/1543596",
+    "source": "APPSO",
+    "date": "2026-03-03",
+    "status": "pending",
+    "summary": "",
+    "takeaway": ""
+  },
+  {
+    "title": "首发评测丨阿里版 ChatGPT 来了！我们问了100多道题，它得了 90 分",
+    "link": "https://www.ifanr.com/app/1542456",
+    "source": "APPSO",
+    "date": "2026-03-03",
+    "status": "pending",
+    "summary": "",
+    "takeaway": ""
+  },
+  {
+    "title": "iPhone 17e 发布，4499 元起售；阿里模型品牌统一为千问；卢伟冰：五年内机器人进小米产线｜极客早知道",
+    "link": "https://www.geekpark.net/news/360493",
+    "source": "GeekPark",
+    "date": "2026-03-03",
+    "status": "pending",
+    "summary": "",
+    "takeaway": ""
+  },
+  {
+    "title": "AI新浪潮观察",
+    "link": "https://www.geekpark.net/column/304",
+    "source": "GeekPark",
+    "date": "2026-03-03",
+    "status": "pending",
+    "summary": "",
+    "takeaway": ""
+  },
+  {
+    "title": "一张玻璃纸，卡住了整个 AI 世界",
+    "link": "https://www.geekpark.net/news/360492",
+    "source": "GeekPark",
+    "date": "2026-03-03",
+    "status": "pending",
+    "summary": "",
+    "takeaway": ""
+  },
+  {
+    "title": "寻找内容「新栖息地」，爱奇艺用 AI 重塑行业想象力",
+    "link": "https://www.geekpark.net/news/360464",
+    "source": "GeekPark",
+    "date": "2026-03-03",
+    "status": "pending",
+    "summary": "",
+    "takeaway": ""
+  },
+  {
+    "title": "AI新浪潮观察",
+    "link": "https://www.geekpark.net/column/304",
+    "source": "GeekPark",
+    "date": "2026-03-03",
+    "status": "pending",
+    "summary": "",
+    "takeaway": ""
+  }
+]

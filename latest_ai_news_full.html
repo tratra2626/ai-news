@@ -1,0 +1,357 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>AI 重点新闻汇总 (2026.01.29 - 02.03)</title>
+    <style>
+        :root {
+            --primary-bg: #f8fafc;
+            --card-bg: #ffffff;
+            --text-main: #1e293b;
+            --text-sub: #64748b;
+            --accent-blue: #3b82f6;
+            --accent-green: #10b981;
+            --accent-purple: #8b5cf6;
+            --accent-orange: #f97316;
+            --border: #e2e8f0;
+        }
+
+        body {
+            font-family: 'Segoe UI', system-ui, -apple-system, sans-serif;
+            background-color: var(--primary-bg);
+            color: var(--text-main);
+            margin: 0;
+            padding: 40px 20px;
+        }
+
+        .container {
+            max-width: 1400px;
+            margin: 0 auto;
+        }
+
+        header {
+            text-align: center;
+            margin-bottom: 50px;
+        }
+
+        h1 {
+            font-size: 2.5rem;
+            margin-bottom: 10px;
+            color: #0f172a;
+        }
+
+        .subtitle {
+            color: var(--text-sub);
+            font-size: 1.1rem;
+        }
+
+        .grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(400px, 1fr));
+            gap: 30px;
+            align-items: start;
+        }
+
+        .column {
+            display: flex;
+            flex-direction: column;
+            gap: 20px;
+        }
+
+        .col-header {
+            background: var(--card-bg);
+            padding: 15px 20px;
+            border-radius: 12px;
+            border-left: 5px solid #ccc;
+            box-shadow: 0 2px 4px rgba(0,0,0,0.05);
+            font-weight: 700;
+            font-size: 1.2rem;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+        }
+
+        .col-openai { border-left-color: var(--accent-green); color: var(--accent-green); }
+        .col-tencent-ali { border-left-color: var(--accent-blue); color: var(--accent-blue); }
+        .col-others { border-left-color: var(--accent-purple); color: var(--accent-purple); }
+
+        .news-card {
+            background: var(--card-bg);
+            border-radius: 12px;
+            padding: 20px;
+            box-shadow: 0 2px 8px rgba(0,0,0,0.05);
+            transition: transform 0.2s;
+            border: 1px solid var(--border);
+            display: flex;
+            flex-direction: column;
+        }
+
+        .news-card:hover {
+            transform: translateY(-3px);
+            box-shadow: 0 8px 16px rgba(0,0,0,0.1);
+        }
+
+        .meta-row {
+            display: flex;
+            justify-content: space-between;
+            margin-bottom: 12px;
+            font-size: 0.8rem;
+        }
+
+        .date-tag {
+            background: #f1f5f9;
+            padding: 4px 8px;
+            border-radius: 6px;
+            color: var(--text-sub);
+        }
+        
+        .source-badge {
+            padding: 4px 8px;
+            border-radius: 6px;
+            font-weight: 500;
+            color: white;
+        }
+        
+        .src-aibase { background-color: #3b82f6; }
+        .src-geekpark { background-color: #f97316; }
+        .src-appso { background-color: #10b981; }
+
+        .news-title {
+            margin: 0 0 10px 0;
+            font-size: 1.1rem;
+            line-height: 1.4;
+        }
+
+        .news-title a {
+            color: var(--text-main);
+            text-decoration: none;
+            background: linear-gradient(120deg, rgba(59, 130, 246, 0.1) 0%, rgba(59, 130, 246, 0.1) 100%);
+            background-repeat: no-repeat;
+            background-size: 100% 0.2em;
+            background-position: 0 88%;
+            transition: background-size 0.2s;
+        }
+
+        .news-title a:hover {
+            background-size: 100% 100%;
+        }
+
+        .content {
+            font-size: 0.95rem;
+            color: var(--text-sub);
+            line-height: 1.6;
+            margin-bottom: 15px;
+            flex-grow: 1;
+        }
+
+        .news-image {
+            width: 100%;
+            height: auto;
+            border-radius: 8px;
+            margin-top: 10px;
+            border: 1px solid #eee;
+        }
+
+    </style>
+</head>
+<body>
+    <header>
+        <h1>AI 重点新闻汇总</h1>
+        <div class="subtitle">2026.01.29 - 2026.02.03 | 聚合源：AIbase, 极客公园, APPSO, 腾讯研究院</div>
+    </header>
+
+    <div class="container grid">
+        
+        <!-- Column 1: OpenAI & Anthropic -->
+        <div class="column">
+            <div class="col-header col-openai">
+                <span>OpenAI / Anthropic</span>
+                <span>🔥</span>
+            </div>
+
+            <article class="news-card">
+                <div class="meta-row">
+                    <span class="date-tag">2026-02-03</span>
+                    <span class="source-badge src-aibase">AIbase</span>
+                </div>
+                <h3 class="news-title"><a href="https://www.aibase.com/zh/news/25212">前 OpenAI 专家发出警示: AGI 面临关键瓶颈</a></h3>
+                <div class="content">
+                    AI大模型虽在推理任务上表现突出，但核心缺陷在于无法从错误中学习。OpenAI研究员Jerry Tworek指出，模型失败后缺乏有效修正机制，成为实现通用人工智能的关键障碍。
+                </div>
+            </article>
+
+            <article class="news-card">
+                <div class="meta-row">
+                    <span class="date-tag">2026-02-03</span>
+                    <span class="source-badge src-aibase">AIbase</span>
+                </div>
+                <h3 class="news-title"><a href="https://www.aibase.com/zh/news/25211">AI 学霸遭遇重创！GPT-4o 专家考试仅得 2.7 分</a></h3>
+                <div class="content">
+                    《自然》杂志报道，GPT-4o 在“人类终极考试”中仅得 2.7 分（满分 100），表现最佳 AI 模型也仅 8 分。这一结果引发对 AI 真实能力的质疑。
+                </div>
+            </article>
+
+            <article class="news-card">
+                <div class="meta-row">
+                    <span class="date-tag">2026-02-03</span>
+                    <span class="source-badge src-aibase">AIbase</span>
+                </div>
+                <h3 class="news-title"><a href="https://www.aibase.com/zh/news/25210">OpenAI 战略重心转向 ChatGPT 引发核心高管离职潮</a></h3>
+                <div class="content">
+                    OpenAI正经历剧烈内部动荡，从研究导向转向产品驱动，导致多位高管和核心研究员流失。CEO萨姆·奥特曼领导下的战略调整引发组织阵痛。
+                </div>
+            </article>
+
+             <article class="news-card">
+                <div class="meta-row">
+                    <span class="date-tag">2026-02-03</span>
+                    <span class="source-badge src-geekpark">极客公园</span>
+                </div>
+                <h3 class="news-title"><a href="https://www.geekpark.net/news/359850">OpenAI 推桌面版 CodeX，多智能体并行，硬刚 Claude Code！</a></h3>
+                <div class="content">
+                   OpenAI 推出全新桌面端编程工具 CodeX，主打多智能体协作，直接对标 Anthropic 的 Claude Code。
+                </div>
+            </article>
+
+            <article class="news-card">
+                <div class="meta-row">
+                    <span class="date-tag">2026-02-03</span>
+                    <span class="source-badge src-geekpark">极客公园</span>
+                </div>
+                <h3 class="news-title"><a href="https://www.geekpark.net/news/359766">黄仁勋否认对 OpenAI 不满</a></h3>
+                <div class="content">
+                    针对此前关于英伟达与 OpenAI 关系紧张的传闻，黄仁勋近日公开否认，表示双方合作依然紧密。
+                </div>
+            </article>
+             <article class="news-card">
+                <div class="meta-row">
+                    <span class="date-tag">2026-02-03</span>
+                    <span class="source-badge src-appso">APPSO</span>
+                </div>
+                <h3 class="news-title"><a href="https://www.ifanr.com/app/1546210">Google 内部文件泄漏：我们和 OpenAI 都没护城河</a></h3>
+                <div class="content">
+                    Google 内部文件泄露，指出开源模型正在快速追赶，Google 和 OpenAI 都没有绝对的护城河，未来属于开源。
+                </div>
+            </article>
+        </div>
+
+        <!-- Column 2: 腾讯 & 阿里 -->
+        <div class="column">
+            <div class="col-header col-tencent-ali">
+                <span>腾讯 / 阿里</span>
+                <span>🚀</span>
+            </div>
+
+            <article class="news-card">
+                <div class="meta-row">
+                    <span class="date-tag">2026-02-03</span>
+                    <span class="source-badge src-aibase">AIbase</span>
+                </div>
+                <h3 class="news-title"><a href="https://www.aibase.com/zh/news/25199">腾讯混元再迎大将：顶级科学家庞天宇加盟</a></h3>
+                <div class="content">
+                    前 Sea AI Lab 高级科学家庞天宇将于 2 月加盟腾讯混元团队，出任首席研究科学家，重点负责多模态强化学习，加速腾讯在生成式 AI 领域的技术追赶。
+                </div>
+            </article>
+
+            <article class="news-card">
+                <div class="meta-row">
+                    <span class="date-tag">2026-02-03</span>
+                    <span class="source-badge src-aibase">AIbase</span>
+                </div>
+                <h3 class="news-title"><a href="https://www.aibase.com/zh/news/25200">阿里通义千问 App 独家冠名四大卫视春晚</a></h3>
+                <div class="content">
+                    阿里通义千问 App 继投入 30 亿元启动“春节请客计划”后，再获东方卫视、浙江卫视、江苏卫视及河南卫视四大马年春晚独家冠名权，AI 将深度参与节目创作。
+                </div>
+            </article>
+
+             <article class="news-card">
+                <div class="meta-row">
+                    <span class="date-tag">2026-02-03</span>
+                    <span class="source-badge src-appso">APPSO</span>
+                </div>
+                <h3 class="news-title"><a href="https://www.ifanr.com/app/1542456">首发评测丨阿里版 ChatGPT 来了！</a></h3>
+                <div class="content">
+                    APPSO 独家评测阿里通义千问，测试了 100 多道题，得分 90 分，展现出强大的中文理解和逻辑能力。
+                </div>
+            </article>
+
+            <article class="news-card">
+                <div class="meta-row">
+                    <span class="date-tag">2026-02-03</span>
+                    <span class="source-badge src-geekpark">极客公园</span>
+                </div>
+                <h3 class="news-title"><a href="https://www.geekpark.net/news/359763">谷歌推出世界生成工具 Project Genie；又一 AI 大牛加入腾讯</a></h3>
+                <div class="content">
+                    除了庞天宇加盟腾讯外，Google 也发布了重磅的世界模型生成工具 Project Genie。
+                </div>
+            </article>
+        </div>
+
+        <!-- Column 3: 其他 & 热门应用 -->
+        <div class="column">
+            <div class="col-header col-others">
+                <span>热门应用 & 其他</span>
+                <span>🌐</span>
+            </div>
+
+            <article class="news-card">
+                <div class="meta-row">
+                    <span class="date-tag">2026-02-03</span>
+                    <span class="source-badge src-aibase">AIbase</span>
+                </div>
+                <h3 class="news-title"><a href="https://www.aibase.com/zh/news/25204">李想盛赞，努比亚打造现象级“豆包手机”</a></h3>
+                <div class="content">
+                    努比亚推出的豆包手机被定义为“新物种”，凭借超前的交互理念改写用户对手机的认知。中兴通讯副总裁张雷高度评价其带来类似“全自动驾驶”的智能体验。
+                </div>
+            </article>
+
+            <article class="news-card">
+                <div class="meta-row">
+                    <span class="date-tag">2026-02-03</span>
+                    <span class="source-badge src-aibase">AIbase</span>
+                </div>
+                <h3 class="news-title"><a href="https://www.aibase.com/zh/news/25201">谷歌发布 Conductor：为 Gemini 打造“长效记忆”</a></h3>
+                <div class="content">
+                    谷歌推出开源扩展程序 Conductor，旨在解决 AI 编程中的“上下文丢失”问题，提升编程效率。
+                </div>
+            </article>
+
+            <article class="news-card">
+                <div class="meta-row">
+                    <span class="date-tag">2026-02-03</span>
+                    <span class="source-badge src-geekpark">极客公园</span>
+                </div>
+                <h3 class="news-title"><a href="https://www.geekpark.net/news/359813">20 亿美元收 Q.ai，苹果想让你「无声」地控制 AI</a></h3>
+                <div class="content">
+                    苹果完成对以色列初创公司 Q.ai 的收购，核心技术为“无声语音”识别，意在构建独特的 AI 交互护城河。
+                </div>
+            </article>
+
+            <article class="news-card">
+                <div class="meta-row">
+                    <span class="date-tag">2026-02-03</span>
+                    <span class="source-badge src-geekpark">极客公园</span>
+                </div>
+                <h3 class="news-title"><a href="https://www.geekpark.net/news/359849">2500 亿美元！SpaceX 合并 xAI</a></h3>
+                <div class="content">
+                    马斯克打造万亿帝国的最后拼图？传 SpaceX 将与 xAI 合并，估值高达 2500 亿美元。
+                </div>
+            </article>
+            
+            <article class="news-card">
+                <div class="meta-row">
+                    <span class="date-tag">2026-02-03</span>
+                    <span class="source-badge src-appso">APPSO</span>
+                </div>
+                <h3 class="news-title"><a href="https://www.ifanr.com/app/1543596">WPS AI 来了，比 ChatGPT 更适合办公</a></h3>
+                <div class="content">
+                    金山办公发布 WPS AI，深度集成办公场景，中文处理能力惊艳，被认为比通用大模型更适合职场应用。
+                </div>
+            </article>
+
+        </div>
+
+    </div>
+</body>
+</html>

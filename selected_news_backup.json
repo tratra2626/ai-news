@@ -1,0 +1,42 @@
+[
+  {
+    "title": "1 小时前\n.\nAIbase\nDeepSeek V4下周发布:原生支持影音图文生成，适配国产算力\n深度求索将于下周发布多模态大模型V4，原生支持图像、视频与文本生成，旨在填补国内高性能低成本开源多模态模型市场空白。这是继1月发布R1推理模型后的首次重大更新。发布初期将提供简要技术说明，一个月后公开详细工程报告。V4模型已与华为、寒武纪完成底层生态合作。",
+    "link": "https://www.aibase.com/zh/news/25790",
+    "source": "AIBase",
+    "date": "2026-02-28",
+    "status": "selected",
+    "summary": "1 小时前\n.\nAIbase\nDeepSeek V4下周发布:原生支持影音图文生成，适配国产算力\n深度求索将于下周发布多模态大模型V4，原生支持图像、视频与文本生成，旨在填补国内高性能低成本开源多模态模型市场空白。这是继1月发布R1推理模型后的首次重大更新。发布初期将提供简要技术说明，一个月后公开详细工程报告。V4模型已与华为、寒武纪完成底层生态合作。",
+    "takeaway": "",
+    "category": "emerging"
+  },
+  {
+    "title": "4 小时前\n.\nAIbase\n​谷歌发布更替公告：Gemini 3 Pro Preview 即将退役，开发者需限时迁移\n谷歌宣布将于2026年3月9日起停止Gemini3Pro Preview模型服务，并敦促开发者尽快迁移至3.1版本。过渡期分为两个节点：3月6日将模型别名指向新版，3月9日旧版正式停用。",
+    "link": "https://www.aibase.com/zh/news/25787",
+    "source": "AIBase",
+    "date": "2026-02-28",
+    "status": "selected",
+    "summary": "4 小时前\n.\nAIbase\n​谷歌发布更替公告：Gemini 3 Pro Preview 即将退役，开发者需限时迁移\n谷歌宣布将于2026年3月9日起停止Gemini3Pro Preview模型服务，并敦促开发者尽快迁移至3.1版本。过渡期分为两个节点：3月6日将模型别名指向新版，3月9日旧版正式停用。",
+    "takeaway": "",
+    "category": "emerging"
+  },
+  {
+    "title": "4 小时前\n.\nAIbase\n硅谷“核弹级”融资！OpenAI 狂揽 1100 亿美元：联手亚马逊加注千亿算力，Trainium 4 芯片浮出水面\nOpenAI获1100亿美元融资，创科技行业纪录，将联手英伟达和亚马逊构建“算力帝国”，加速AGI布局。",
+    "link": "https://www.aibase.com/zh/news/25784",
+    "source": "AIBase",
+    "date": "2026-02-28",
+    "status": "selected",
+    "summary": "4 小时前\n.\nAIbase\n硅谷“核弹级”融资！OpenAI 狂揽 1100 亿美元：联手亚马逊加注千亿算力，Trainium 4 芯片浮出水面\nOpenAI获1100亿美元融资，创科技行业纪录，将联手英伟达和亚马逊构建“算力帝国”，加速AGI布局。",
+    "takeaway": "",
+    "category": "overseas"
+  },
+  {
+    "title": "5 小时前\n.\nAIbase\n尺度大开？ChatGPT 成人模式“Naughty Chat”曝光，OpenAI 拟引入年龄验证\nOpenAI在安卓版ChatGPT代码中隐藏“顽皮对话”模式，允许用户主动请求时使用成人主题语言，显示其在情感需求与内容过滤间寻求平衡。",
+    "link": "https://www.aibase.com/zh/news/25782",
+    "source": "AIBase",
+    "date": "2026-02-28",
+    "status": "selected",
+    "summary": "5 小时前\n.\nAIbase\n尺度大开？ChatGPT 成人模式“Naughty Chat”曝光，OpenAI 拟引入年龄验证\nOpenAI在安卓版ChatGPT代码中隐藏“顽皮对话”模式，允许用户主动请求时使用成人主题语言，显示其在情感需求与内容过滤间寻求平衡。",
+    "takeaway": "",
+    "category": "overseas"
+  }
+]
