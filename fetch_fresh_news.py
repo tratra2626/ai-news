@@ -14,19 +14,19 @@ TODAY = datetime.date.today()
 LIMIT_DATE = TODAY - datetime.timedelta(days=2)
 
 def clear_files():
-    print("Cleaning up old files...")
+    print("Cleaning up candidates...")
     if os.path.exists(CANDIDATES_FILE):
         os.remove(CANDIDATES_FILE)
     
-    # Backup selected_news.json
-    if os.path.exists(SELECTED_FILE):
-        with open(SELECTED_FILE, 'r', encoding='utf-8') as f:
-            content = f.read()
-        with open('selected_news_backup.json', 'w', encoding='utf-8') as f:
-            f.write(content)
-        # Clear it
-        with open(SELECTED_FILE, 'w', encoding='utf-8') as f:
-            f.write('[]')
+    # DO NOT clear selected_news.json as per user request to keep history
+    # if os.path.exists(SELECTED_FILE):
+    #     with open(SELECTED_FILE, 'r', encoding='utf-8') as f:
+    #         content = f.read()
+    #     with open('selected_news_backup.json', 'w', encoding='utf-8') as f:
+    #         f.write(content)
+    #     # Clear it
+    #     with open(SELECTED_FILE, 'w', encoding='utf-8') as f:
+    #         f.write('[]')
     print("Files cleared.")
 
 # --- AIBase Fetcher ---

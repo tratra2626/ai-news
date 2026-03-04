@@ -6,6 +6,10 @@ SELECTED_FILE = 'selected_news.json'
 HTML_FILE = 'ai_dashboard.html'
 
 def get_week_range(date_str):
+    # Custom logic for 02.27 - 03.03 (and later, as per user request to group recent news)
+    if date_str >= '2026-02-27':
+        return "02.27 - 03.03"
+
     try:
         dt = datetime.date.fromisoformat(date_str)
     except ValueError:
