@@ -19,13 +19,23 @@ def get_week_range(date_str):
     end = start + datetime.timedelta(days=6)
     return f"{start.strftime('%m.%d')} - {end.strftime('%m.%d')}"
 
+def get_company_tag(title, summary):
+    text = (title + " " + summary).lower()
+    if 'openai' in text or 'chatgpt' in text or 'gpt' in text: return 'openai'
+    if 'anthropic' in text or 'claude' in text: return 'anthropic'
+    if 'google' in text or 'gemini' in text: return 'google'
+    if 'alibaba' in text or 'qwen' in text or '通义' in text: return 'alibaba'
+    if 'tencent' in text or 'hunyuan' in text: return 'tencent'
+    return 'other'
+
 def create_news_item(soup, item):
-    news_item = soup.new_tag('div', attrs={'class': 'news-item'})
+    company = get_company_tag(item['title'], item.get('summary', ''))
+    news_item = soup.new_tag('div', attrs={'class': 'news-item', 'data-company': company})
     
     # Date badge (optional, inside item)
-    # date_badge = soup.new_tag('span', attrs={'class': 'date-badge'})
-    # date_badge.string = item['date'].replace('-', '.')
-    # news_item.append(date_badge)
+    date_badge = soup.new_tag('span', attrs={'class': 'date-badge'})
+    date_badge.string = item['date'].replace('-', '.')
+    news_item.append(date_badge)
 
     # Title
     title_div = soup.new_tag('div', attrs={'class': 'news-title'})
