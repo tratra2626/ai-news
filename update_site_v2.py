@@ -1,5 +1,6 @@
 import json
 import datetime
+import shutil
 from bs4 import BeautifulSoup
 
 SELECTED_FILE = 'selected_news.json'
@@ -146,7 +147,9 @@ def update_html():
     with open(HTML_FILE, 'w', encoding='utf-8') as f:
         f.write(str(soup))
     
-    print("HTML updated successfully.")
+    # Create index.html copy for GitHub Pages
+    shutil.copy(HTML_FILE, 'index.html')
+    print("HTML updated and index.html created successfully.")
 
 if __name__ == "__main__":
     update_html()
